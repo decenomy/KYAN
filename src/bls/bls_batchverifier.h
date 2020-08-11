@@ -2,8 +2,8 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef DASH_CRYPTO_BLS_BATCHVERIFIER_H
-#define DASH_CRYPTO_BLS_BATCHVERIFIER_H
+#ifndef KYAN_CRYPTO_BLS_BATCHVERIFIER_H
+#define KYAN_CRYPTO_BLS_BATCHVERIFIER_H
 
 #include "bls.h"
 
@@ -232,4 +232,4 @@ private:
     }
 };
 
-#endif //DASH_CRYPTO_BLS_BATCHVERIFIER_H
+#endif //KYAN_CRYPTO_BLS_BATCHVERIFIER_H
