@@ -313,7 +313,7 @@ uint64_t SipHashUint256Extra(uint64_t k0, uint64_t k1, const uint256& val, uint3
 
 /* ----------- Kyan Hash ------------------------------------------------ */
 template<typename T1>
-inline uint256 HashX11(const T1 pbegin, const T1 pend)
+inline uint256 HashX11K(const T1 pbegin, const T1 pend)
 
 {
     sph_blake512_context     ctx_blake;
