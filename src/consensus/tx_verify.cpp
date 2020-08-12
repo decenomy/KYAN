@@ -195,7 +195,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state)
             // With the introduction of CbTx, coinbase scripts are not required anymore to hold a valid block height
             minCbSize = 1;
         }
-        if (tx.vin[0].scriptSig.size() < minCbSize || tx.vin[0].scriptSig.size() > 100)
+        if (tx.vin[0].scriptSig.size() < minCbSize || tx.vin[0].scriptSig.size() > 144)
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-length");
     }
     else
