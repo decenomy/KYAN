@@ -337,7 +337,7 @@ inline uint256 HashX11K(const T1 pbegin, const T1 pend)
 
 /* ----------- Dash Hash ------------------------------------------------ */
 template<typename T1>
-inline uint256 HashX11K(const T1 pbegin, const T1 pend)
+inline uint256 HashX11(const T1 pbegin, const T1 pend)
 
 {
     sph_blake512_context     ctx_blake;
