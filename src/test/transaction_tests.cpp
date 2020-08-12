@@ -4,7 +4,7 @@
 
 #include "data/tx_invalid.json.h"
 #include "data/tx_valid.json.h"
-#include "test/test_dash.h"
+#include "test/test_kyan.h"
 
 #include "clientversion.h"
 #include "checkqueue.h"
