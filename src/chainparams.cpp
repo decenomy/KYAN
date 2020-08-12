@@ -382,9 +382,9 @@ public:
 
     //    /////////////////////////////////////////////////////////////////
 
-        genesis = CreateGenesisBlock(1597214953, 364812, 0x1e0ffff0, 1, 1000 * COIN);
+        genesis = CreateGenesisBlock(1597214953, 696756, 0x1e0ffff0, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00000ab389c60b1c2231013cfcd0c90a21ebe902cccd085149db60a017a432da"));
+        assert(consensus.hashGenesisBlock == uint256S("0x000001dc6060639c2294f684eee5f85741d6b7befb9cd55471ee99c66583239a"));
         assert(genesis.hashMerkleRoot == uint256S("0xcdaa490fc0f837f5ad42d59208c2b58b0ea616134a865798d18d63f3e79632ef"));
 
         vSeeds.emplace_back("kyan-mainnet.572133.club", true);
@@ -594,9 +594,9 @@ public:
 
     //    /////////////////////////////////////////////////////////////////
 
-        genesis = CreateGenesisBlock(1597182068, 556444, 0x1e0ffff0, 1, 1000 * COIN);
+        genesis = CreateGenesisBlock(1597182068, 1309576, 0x1e0ffff0, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00000baca5899daba3be1d5007bb038f507f7b92f2d09799bb2bb9813c9156e2"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0000095e92083d97cd31e72d78d37bad05de78f09f6a9572167210d40e324919"));
         assert(genesis.hashMerkleRoot == uint256S("0xcdaa490fc0f837f5ad42d59208c2b58b0ea616134a865798d18d63f3e79632ef"));
 
         vFixedSeeds.clear();
@@ -807,9 +807,9 @@ public:
 
 	// 	// return;
 
-        genesis = CreateGenesisBlock(1597182768, 0, 0x207fffff, 1, 1000 * COIN);
+        genesis = CreateGenesisBlock(1597182768, 2, 0x207fffff, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x41513d21bc5d93ebb43870182e81dec99058c1b32e8e20d3cdec3d620b274e25"));
+        assert(consensus.hashGenesisBlock == uint256S("0x26272b9ea02be1ac2bbdb4d032be2cf18f2027efb5a05b61332f7b4b6eadb46a"));
         assert(genesis.hashMerkleRoot == uint256S("0xcdaa490fc0f837f5ad42d59208c2b58b0ea616134a865798d18d63f3e79632ef"));
 
         devnetGenesis = FindDevNetGenesisBlock(consensus, genesis, 50 * COIN);
@@ -850,7 +850,7 @@ public:
         nPoolMaxParticipants = 5;
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
 
-        vSporkAddresses = {"yjPtiKh2uwk3bDutTEA2q9mCtXyiZRWn55"};
+        vSporkAddresses = {"yNEyeH1xUpxXfU2k46SNizUbmFjQXJcGvi"};
         nMinSporkKeys = 1;
         // devnets are started with no blocks and no MN, so we can't check for upgraded MN (as there are none)
         fBIP9CheckMasternodesUpgraded = false;
@@ -1003,7 +1003,7 @@ public:
 
         genesis = CreateGenesisBlock(1597182874, 2, 0x207fffff, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x1c7f6d310ccfb1ebca31f45a8ab5d9632e289dd1d4c33d9ba353e2876362114a"));
+        assert(consensus.hashGenesisBlock == uint256S("0x11b1f2c0c00b6585be57aea4cb330ed851fc76d575737b67ee9fc1f14f2c70c2"));
         assert(genesis.hashMerkleRoot == uint256S("0xcdaa490fc0f837f5ad42d59208c2b58b0ea616134a865798d18d63f3e79632ef"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
@@ -1020,8 +1020,8 @@ public:
         nPoolMinParticipants = 3;
         nPoolMaxParticipants = 5;
 
-        // privKey: cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK
-        vSporkAddresses = {"yj949n1UH6fDhw6HtVE5VMj2iSTaSWBMcW"};
+        // privKey: cV2AWxTovJ1tTBNfjuL4BETdpUP5VbgNodepDcVbZC8dowi5mZxX
+        vSporkAddresses = {"yUaVJuZPbgSpsgztGTL7anENvLr7zFqm8X"};
         nMinSporkKeys = 1;
         // regtest usually has no masternodes in most tests, so don't check for upgraged MNs
         fBIP9CheckMasternodesUpgraded = false;
