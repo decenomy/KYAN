@@ -317,7 +317,7 @@ public:
         pchMessageStart[1] = 0x6f;
         pchMessageStart[2] = 0x9a;
         pchMessageStart[3] = 0x9f;
-        nDefaultPort = 6969;
+        nDefaultPort = 7577;
         nPruneAfterHeight = 100000;
 
     //     // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
@@ -529,7 +529,7 @@ public:
         pchMessageStart[1] = 0xa9;
         pchMessageStart[2] = 0xf6;
         pchMessageStart[3] = 0xf9;
-        nDefaultPort = 16969;
+        nDefaultPort = 7584;
         nPruneAfterHeight = 1000;
 
     //     // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
@@ -744,7 +744,7 @@ public:
         pchMessageStart[1] = 0x9b;
         pchMessageStart[2] = 0xb6;
         pchMessageStart[3] = 0xb9;
-        nDefaultPort = 16669;
+        nDefaultPort = 7568;
         nPruneAfterHeight = 1000;
 
     //     // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
@@ -938,7 +938,7 @@ public:
         pchMessageStart[1] = 0x9d;
         pchMessageStart[2] = 0xd6;
         pchMessageStart[3] = 0xd9;
-        nDefaultPort = 16769;
+        nDefaultPort = 7582;
         nPruneAfterHeight = 1000;
 
     //     // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
