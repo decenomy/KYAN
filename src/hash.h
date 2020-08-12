@@ -372,8 +372,8 @@ inline uint256 HashX11(const T1 pbegin, const T1 pend)
     sph_simd512_close(&ctx_simd, static_cast<void*>(&hash[9]));
 
     sph_groestl512_init(&ctx_groestl);
-    sph_groestl512 (&ctx_groestl, static_cast<const void*>(&hash[10]), 64);
-    sph_groestl512_close(&ctx_groestl, static_cast<void*>(&hash[11]));
+    sph_groestl512 (&ctx_groestl, static_cast<const void*>(&hash[9]), 64);
+    sph_groestl512_close(&ctx_groestl, static_cast<void*>(&hash[10]));
 
     return hash[10].trim256();
 }
