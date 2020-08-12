@@ -243,19 +243,19 @@ public:
         consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
         consensus.nSuperblockStartBlock = 0; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
-        consensus.nSuperblockStartHash = uint256S("0x00000baca5899daba3be1d5007bb038f507f7b92f2d09799bb2bb9813c9156e2");
+        consensus.nSuperblockStartHash = uint256S("0x000001dc6060639c2294f684eee5f85741d6b7befb9cd55471ee99c66583239a");
         consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
         consensus.nMasternodeMinimumConfirmations = 15;
         consensus.BIP34Height = 1;
-        consensus.BIP34Hash = uint256S("0x00000baca5899daba3be1d5007bb038f507f7b92f2d09799bb2bb9813c9156e2");
+        consensus.BIP34Hash = uint256S("0x000001dc6060639c2294f684eee5f85741d6b7befb9cd55471ee99c66583239a");
         consensus.BIP65Height = 1; // 
         consensus.BIP66Height = 1; // 
         consensus.DIP0001Height = 2;
         consensus.DIP0003Height = 2;
         consensus.DIP0003EnforcementHeight = 2;
-        consensus.DIP0003EnforcementHash = uint256S("0x00000baca5899daba3be1d5007bb038f507f7b92f2d09799bb2bb9813c9156e2");
+        consensus.DIP0003EnforcementHash = uint256S("0x000001dc6060639c2294f684eee5f85741d6b7befb9cd55471ee99c66583239a");
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Kyan: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Kyan: 2.5 minutes
@@ -466,13 +466,13 @@ public:
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
         consensus.BIP34Height = 1;
-        consensus.BIP34Hash = uint256S("0x00000baca5899daba3be1d5007bb038f507f7b92f2d09799bb2bb9813c9156e2");
+        consensus.BIP34Hash = uint256S("0x0000095e92083d97cd31e72d78d37bad05de78f09f6a9572167210d40e324919");
         consensus.BIP65Height = 1; // 
         consensus.BIP66Height = 1; // 
         consensus.DIP0001Height = 2;
         consensus.DIP0003Height = 2;
         consensus.DIP0003EnforcementHeight = 2;
-        consensus.DIP0003EnforcementHash = uint256S("0x00000baca5899daba3be1d5007bb038f507f7b92f2d09799bb2bb9813c9156e2");
+        consensus.DIP0003EnforcementHash = uint256S("0x0000095e92083d97cd31e72d78d37bad05de78f09f6a9572167210d40e324919");
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Kyan: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Kyan: 2.5 minutes
@@ -535,60 +535,60 @@ public:
     //     // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
     //    /////////////////////////////////////////////////////////////////
 
-	// 	uint32_t nGenesisTime = 1597182068;  // Monday, August 10, 2020 1:56:00 PM GMT+03:00
+		uint32_t nGenesisTime = 1597182068;  // Monday, August 10, 2020 1:56:00 PM GMT+03:00
 
-	// 	arith_uint256 test;
-	// 	bool fNegative;
-	// 	bool fOverflow;
-	// 	test.SetCompact(0x1e0ffff0, &fNegative, &fOverflow);
-	// 	std::cout << "Test threshold: " << test.GetHex() << "\n\n";
+		arith_uint256 test;
+		bool fNegative;
+		bool fOverflow;
+		test.SetCompact(0x1e0ffff0, &fNegative, &fOverflow);
+		std::cout << "Test threshold: " << test.GetHex() << "\n\n";
 
-	// 	int genesisNonce = 0;
-	// 	uint256 TempHashHolding = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
-	// 	uint256 BestBlockHash = uint256S("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-	// 	for (int i=0;i<40000000;i++) {
-	// 		genesis = CreateGenesisBlock(nGenesisTime, i, 0x1e0ffff0, 1, 1000 * COIN);
-	// 		//genesis.hashPrevBlock = TempHashHolding;
-	// 		// Depending on when the timestamp is on the genesis block. You will need to use GetX16RHash or GetX16RV2Hash. Replace GetHash() with these below
-	// 		consensus.hashGenesisBlock = genesis.GetHash();
+		int genesisNonce = 0;
+		uint256 TempHashHolding = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
+		uint256 BestBlockHash = uint256S("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+		for (int i=0;i<40000000;i++) {
+			genesis = CreateGenesisBlock(nGenesisTime, i, 0x1e0ffff0, 1, 1000 * COIN);
+			//genesis.hashPrevBlock = TempHashHolding;
+			// Depending on when the timestamp is on the genesis block. You will need to use GetX16RHash or GetX16RV2Hash. Replace GetHash() with these below
+			consensus.hashGenesisBlock = genesis.GetHash();
 
-	// 		arith_uint256 BestBlockHashArith = UintToArith256(BestBlockHash);
-	// 		if (UintToArith256(consensus.hashGenesisBlock) < BestBlockHashArith) {
-	// 			BestBlockHash = consensus.hashGenesisBlock;
-	// 			std::cout << BestBlockHash.GetHex() << " Nonce: " << i << "\n";
-	// 			std::cout << "   PrevBlockHash: " << genesis.hashPrevBlock.GetHex() << "\n";
-	// 		}
+			arith_uint256 BestBlockHashArith = UintToArith256(BestBlockHash);
+			if (UintToArith256(consensus.hashGenesisBlock) < BestBlockHashArith) {
+				BestBlockHash = consensus.hashGenesisBlock;
+				std::cout << BestBlockHash.GetHex() << " Nonce: " << i << "\n";
+				std::cout << "   PrevBlockHash: " << genesis.hashPrevBlock.GetHex() << "\n";
+			}
 
-	// 		TempHashHolding = consensus.hashGenesisBlock;
+			TempHashHolding = consensus.hashGenesisBlock;
 
-	// 		if (BestBlockHashArith < test) {
-	// 			genesisNonce = i - 1;
-	// 			break;
-	// 		}
-	// 		//std::cout << consensus.hashGenesisBlock.GetHex() << "\n";
-	// 	}
-	// 	std::cout << "\n";
-	// 	std::cout << "\n";
-	// 	std::cout << "\n";
+			if (BestBlockHashArith < test) {
+				genesisNonce = i - 1;
+				break;
+			}
+			//std::cout << consensus.hashGenesisBlock.GetHex() << "\n";
+		}
+		std::cout << "\n";
+		std::cout << "\n";
+		std::cout << "\n";
 
-	// 	std::cout << "hashGenesisBlock to 0x" << BestBlockHash.GetHex() << std::endl;
-	// 	std::cout << "Genesis Nonce to " << genesisNonce << std::endl;
-	// 	std::cout << "Genesis Merkle " << genesis.hashMerkleRoot.GetHex() << std::endl;
+		std::cout << "hashGenesisBlock to 0x" << BestBlockHash.GetHex() << std::endl;
+		std::cout << "Genesis Nonce to " << genesisNonce << std::endl;
+		std::cout << "Genesis Merkle " << genesis.hashMerkleRoot.GetHex() << std::endl;
 
-	// 	// std::cout << "\n";
-	// 	// std::cout << "\n";
-	// 	// int totalHits = 0;
-	// 	// double totalTime = 0.0;
+		// std::cout << "\n";
+		// std::cout << "\n";
+		// int totalHits = 0;
+		// double totalTime = 0.0;
 
-	// 	// for(int x = 0; x < 16; x++) {
-	// 	// 	totalHits += algoHashHits[x];
-	// 	// 	totalTime += algoHashTotal[x];
-	// 	// 	std::cout << "hash algo " << x << " hits " << algoHashHits[x] << " total " << algoHashTotal[x] << " avg " << algoHashTotal[x]/algoHashHits[x] << std::endl;
-	// 	// }
+		// for(int x = 0; x < 16; x++) {
+		// 	totalHits += algoHashHits[x];
+		// 	totalTime += algoHashTotal[x];
+		// 	std::cout << "hash algo " << x << " hits " << algoHashHits[x] << " total " << algoHashTotal[x] << " avg " << algoHashTotal[x]/algoHashHits[x] << std::endl;
+		// }
 
-	// 	// std::cout << "Totals: hash algo " <<  " hits " << totalHits << " total " << totalTime << " avg " << totalTime/totalHits << std::endl;
+		// std::cout << "Totals: hash algo " <<  " hits " << totalHits << " total " << totalTime << " avg " << totalTime/totalHits << std::endl;
 
-	// 	genesis.hashPrevBlock = TempHashHolding;
+		genesis.hashPrevBlock = TempHashHolding;
 
 	// 	return;
 
