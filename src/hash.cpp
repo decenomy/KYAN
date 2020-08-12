@@ -8,7 +8,7 @@
 #include "crypto/hmac_sha512.h"
 #include "pubkey.h"
 
-auto hBlake512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hBlake512 = [](const void *data, size_t len) {
     
     sph_blake512_context ctx_blake;
     uint512 hash;
@@ -20,7 +20,7 @@ auto hBlake512 = [](const void *data, size_t len) {
     return hash;
 };
 
-auto hBmw512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hBmw512 = [](const void *data, size_t len) {
     
     sph_bmw512_context ctx_bmw;
     uint512 hash;
@@ -32,7 +32,7 @@ auto hBmw512 = [](const void *data, size_t len) {
     return hash;
 };
 
-auto hGroestl512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hGroestl512 = [](const void *data, size_t len) {
     
     sph_groestl512_context ctx_groestl;
     uint512 hash;
@@ -44,7 +44,7 @@ auto hGroestl512 = [](const void *data, size_t len) {
     return hash;
 };
 
-auto hSkein512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hSkein512 = [](const void *data, size_t len) {
     
     sph_skein512_context ctx_skein;
     uint512 hash;
@@ -56,7 +56,7 @@ auto hSkein512 = [](const void *data, size_t len) {
     return hash;
 };
 
-auto hJh512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hJh512 = [](const void *data, size_t len) {
     
     sph_jh512_context ctx_jh;
     uint512 hash;
@@ -68,7 +68,7 @@ auto hJh512 = [](const void *data, size_t len) {
     return hash;
 };
 
-auto hKeccak512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hKeccak512 = [](const void *data, size_t len) {
     
     sph_keccak512_context ctx_keccak;
     uint512 hash;
@@ -80,7 +80,7 @@ auto hKeccak512 = [](const void *data, size_t len) {
     return hash;
 };
 
-auto hLuffa512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hLuffa512 = [](const void *data, size_t len) {
     
     sph_luffa512_context ctx_luffa;
     uint512 hash;
@@ -92,7 +92,7 @@ auto hLuffa512 = [](const void *data, size_t len) {
     return hash;
 };
 
-auto hCubehash512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hCubehash512 = [](const void *data, size_t len) {
     
     sph_cubehash512_context ctx_cubehash;
     uint512 hash;
@@ -104,7 +104,7 @@ auto hCubehash512 = [](const void *data, size_t len) {
     return hash;
 };
 
-auto hShavite512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hShavite512 = [](const void *data, size_t len) {
     
     sph_shavite512_context ctx_shavite;
     uint512 hash;
@@ -116,7 +116,7 @@ auto hShavite512 = [](const void *data, size_t len) {
     return hash;
 };
 
-auto hSimd512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hSimd512 = [](const void *data, size_t len) {
     
     sph_simd512_context ctx_simd;
     uint512 hash;
@@ -128,7 +128,7 @@ auto hSimd512 = [](const void *data, size_t len) {
     return hash;
 };
 
-auto hEcho512 = [](const void *data, size_t len) {
+std::function<uint512 (const void *data, size_t len)> hEcho512 = [](const void *data, size_t len) {
     
     sph_echo512_context ctx_echo;
     uint512 hash;
