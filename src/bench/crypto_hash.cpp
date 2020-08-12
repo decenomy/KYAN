@@ -1,5 +1,6 @@
 // Copyright (c) 2016 The Bitcoin Core developers
 // Copyright (c) 2018-2020 The Dash Core developers
+// Copyright (c) 2020-2020 The Kyan Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -217,12 +218,69 @@ static void HASH_X11_2048b_single(benchmark::State& state)
         hash = HashX11K(in.begin(), in.end());
 }
 
+static void HASH_X11K(benchmark::State& state)
+{
+    uint256 hash;
+    std::vector<uint8_t> in(BUFFER_SIZE,0);
+    while (state.KeepRunning())
+        hash = HashX11K(in.begin(), in.end());
+}
+
+static void HASH_X11K_0032b_single(benchmark::State& state)
+{
+    uint256 hash;
+    std::vector<uint8_t> in(32,0);
+    while (state.KeepRunning())
+        hash = HashX11K(in.begin(), in.end());
+}
+
+static void HASH_X11K_0080b_single(benchmark::State& state)
+{
+    uint256 hash;
+    std::vector<uint8_t> in(80,0);
+    while (state.KeepRunning())
+        hash = HashX11K(in.begin(), in.end());
+}
+
+static void HASH_X11K_0128b_single(benchmark::State& state)
+{
+    uint256 hash;
+    std::vector<uint8_t> in(128,0);
+    while (state.KeepRunning())
+        hash = HashX11K(in.begin(), in.end());
+}
+
+static void HASH_X11K_0512b_single(benchmark::State& state)
+{
+    uint256 hash;
+    std::vector<uint8_t> in(512,0);
+    while (state.KeepRunning())
+        hash = HashX11K(in.begin(), in.end());
+}
+
+static void HASH_X11K_1024b_single(benchmark::State& state)
+{
+    uint256 hash;
+    std::vector<uint8_t> in(1024,0);
+    while (state.KeepRunning())
+        hash = HashX11K(in.begin(), in.end());
+}
+
+static void HASH_X11K_2048b_single(benchmark::State& state)
+{
+    uint256 hash;
+    std::vector<uint8_t> in(2048,0);
+    while (state.KeepRunning())
+        hash = HashX11K(in.begin(), in.end());
+}
+
 BENCHMARK(HASH_RIPEMD160);
 BENCHMARK(HASH_SHA1);
 BENCHMARK(HASH_SHA256);
 BENCHMARK(HASH_DSHA256);
 BENCHMARK(HASH_SHA512);
 BENCHMARK(HASH_X11);
+BENCHMARK(HASH_X11K);
 
 BENCHMARK(HASH_SHA256_0032b);
 BENCHMARK(HASH_DSHA256_0032b);
@@ -241,5 +299,11 @@ BENCHMARK(HASH_X11_0128b_single);
 BENCHMARK(HASH_X11_0512b_single);
 BENCHMARK(HASH_X11_1024b_single);
 BENCHMARK(HASH_X11_2048b_single);
+BENCHMARK(HASH_X11K_0032b_single);
+BENCHMARK(HASH_X11K_0080b_single);
+BENCHMARK(HASH_X11K_0128b_single);
+BENCHMARK(HASH_X11K_0512b_single);
+BENCHMARK(HASH_X11K_1024b_single);
+BENCHMARK(HASH_X11K_2048b_single);
 BENCHMARK(FastRandom_32bit);
 BENCHMARK(FastRandom_1bit);

@@ -1,4 +1,5 @@
 // Copyright (c) 2013-2015 The Bitcoin Core developers
+// Copyright (c) 2020-2020 The Kyan Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,6 +8,151 @@
 #include "crypto/hmac_sha512.h"
 #include "pubkey.h"
 
+std::function<uint512 (const void *data, size_t len)> hBlake512 = [](const void *data, size_t len) {
+    
+    sph_blake512_context ctx_blake;
+    uint512 hash;
+
+    sph_blake512_init(&ctx_blake);
+    sph_blake512 (&ctx_blake, data, len);
+    sph_blake512_close(&ctx_blake, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512 (const void *data, size_t len)> hBmw512 = [](const void *data, size_t len) {
+    
+    sph_bmw512_context ctx_bmw;
+    uint512 hash;
+
+    sph_bmw512_init(&ctx_bmw);
+    sph_bmw512 (&ctx_bmw, data, len);
+    sph_bmw512_close(&ctx_bmw, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512 (const void *data, size_t len)> hGroestl512 = [](const void *data, size_t len) {
+    
+    sph_groestl512_context ctx_groestl;
+    uint512 hash;
+
+    sph_groestl512_init(&ctx_groestl);
+    sph_groestl512 (&ctx_groestl, data, len);
+    sph_groestl512_close(&ctx_groestl, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512 (const void *data, size_t len)> hSkein512 = [](const void *data, size_t len) {
+    
+    sph_skein512_context ctx_skein;
+    uint512 hash;
+
+    sph_skein512_init(&ctx_skein);
+    sph_skein512 (&ctx_skein, data, len);
+    sph_skein512_close(&ctx_skein, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512 (const void *data, size_t len)> hJh512 = [](const void *data, size_t len) {
+    
+    sph_jh512_context ctx_jh;
+    uint512 hash;
+
+    sph_jh512_init(&ctx_jh);
+    sph_jh512 (&ctx_jh, data, len);
+    sph_jh512_close(&ctx_jh, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512 (const void *data, size_t len)> hKeccak512 = [](const void *data, size_t len) {
+    
+    sph_keccak512_context ctx_keccak;
+    uint512 hash;
+
+    sph_keccak512_init(&ctx_keccak);
+    sph_keccak512 (&ctx_keccak, data, len);
+    sph_keccak512_close(&ctx_keccak, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512 (const void *data, size_t len)> hLuffa512 = [](const void *data, size_t len) {
+    
+    sph_luffa512_context ctx_luffa;
+    uint512 hash;
+
+    sph_luffa512_init(&ctx_luffa);
+    sph_luffa512 (&ctx_luffa, data, len);
+    sph_luffa512_close(&ctx_luffa, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512 (const void *data, size_t len)> hCubehash512 = [](const void *data, size_t len) {
+    
+    sph_cubehash512_context ctx_cubehash;
+    uint512 hash;
+
+    sph_cubehash512_init(&ctx_cubehash);
+    sph_cubehash512 (&ctx_cubehash, data, len);
+    sph_cubehash512_close(&ctx_cubehash, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512 (const void *data, size_t len)> hShavite512 = [](const void *data, size_t len) {
+    
+    sph_shavite512_context ctx_shavite;
+    uint512 hash;
+
+    sph_shavite512_init(&ctx_shavite);
+    sph_shavite512 (&ctx_shavite, data, len);
+    sph_shavite512_close(&ctx_shavite, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512 (const void *data, size_t len)> hSimd512 = [](const void *data, size_t len) {
+    
+    sph_simd512_context ctx_simd;
+    uint512 hash;
+
+    sph_simd512_init(&ctx_simd);
+    sph_simd512 (&ctx_simd, data, len);
+    sph_simd512_close(&ctx_simd, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512 (const void *data, size_t len)> hEcho512 = [](const void *data, size_t len) {
+    
+    sph_echo512_context ctx_echo;
+    uint512 hash;
+
+    sph_echo512_init(&ctx_echo);
+    sph_echo512 (&ctx_echo, data, len);
+    sph_echo512_close(&ctx_echo, static_cast<void*>(&hash));
+
+    return hash;
+};
+
+std::function<uint512(const void *data, size_t len)> fnHashX11K[] = {
+    hBlake512,
+    hBmw512,
+    hGroestl512,
+    hSkein512,
+    hJh512,
+    hKeccak512,
+    hLuffa512,
+    hCubehash512,
+    hShavite512,
+    hSimd512,
+    hEcho512
+};
 
 inline uint32_t ROTL32(uint32_t x, int8_t r)
 {
