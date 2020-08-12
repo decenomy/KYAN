@@ -129,7 +129,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../dash.qrc"/>
+  <include location="../kyan.qrc"/>
  </resources>
  <connections>
   <connection>

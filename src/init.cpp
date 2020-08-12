@@ -5,7 +5,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/dash-config.h"
+#include "config/kyan-config.h"
 #endif
 
 #include "init.h"
@@ -219,7 +219,7 @@ void PrepareShutdown()
     /// for example if the data directory was found to be locked.
     /// Be sure that anything that writes files or flushes caches only does this if the respective
     /// module was initialized.
-    RenameThread("dash-shutoff");
+    RenameThread("kyan-shutoff");
     mempool.AddTransactionsUpdated(1);
     StopHTTPRPC();
     StopREST();
@@ -596,8 +596,8 @@ std::string HelpMessage(HelpMessageMode mode)
     }
     strUsage += HelpMessageOpt("-shrinkdebugfile", _("Shrink debug.log file on client startup (default: 1 when no -debug)"));
     AppendParamsHelpMessages(strUsage, showDebug);
-    strUsage += HelpMessageOpt("-litemode", strprintf(_("Disable all Dash specific functionality (Masternodes, PrivateSend, InstantSend, Governance) (0-1, default: %u)"), 0));
-    strUsage += HelpMessageOpt("-sporkaddr=<dashaddress>", strprintf(_("Override spork address. Only useful for regtest and devnet. Using this on mainnet or testnet will ban you.")));
+    strUsage += HelpMessageOpt("-litemode", strprintf(_("Disable all Kyan specific functionality (Masternodes, PrivateSend, InstantSend, Governance) (0-1, default: %u)"), 0));
+    strUsage += HelpMessageOpt("-sporkaddr=<kyanaddress>", strprintf(_("Override spork address. Only useful for regtest and devnet. Using this on mainnet or testnet will ban you.")));
     strUsage += HelpMessageOpt("-minsporkkeys=<n>", strprintf(_("Overrides minimum spork signers to change spork value. Only useful for regtest and devnet. Using this on mainnet or testnet will ban you.")));
 
     strUsage += HelpMessageGroup(_("Masternode options:"));
@@ -659,8 +659,8 @@ std::string HelpMessage(HelpMessageMode mode)
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/dashpay/dash>";
-    const std::string URL_WEBSITE = "<https://dash.org>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/kyanpay/kyan>";
+    const std::string URL_WEBSITE = "<https://kyan.org>";
 
     return CopyrightHolders(_("Copyright (C)"), 2014, COPYRIGHT_YEAR) + "\n" +
            "\n" +
@@ -763,7 +763,7 @@ void CleanupBlockRevFiles()
 void ThreadImport(std::vector<fs::path> vImportFiles)
 {
     const CChainParams& chainparams = Params();
-    RenameThread("dash-loadblk");
+    RenameThread("kyan-loadblk");
 
     {
     CImportingNow imp;
@@ -865,7 +865,7 @@ void ThreadImport(std::vector<fs::path> vImportFiles)
 }
 
 /** Sanity checks
- *  Ensure that Dash Core is running in a usable environment with all
+ *  Ensure that Kyan Core is running in a usable environment with all
  *  necessary library support.
  */
 bool InitSanityCheck(void)
@@ -1024,7 +1024,7 @@ void InitLogging()
     fLogIPs = gArgs.GetBoolArg("-logips", DEFAULT_LOGIPS);
 
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    LogPrintf("Dash Core version %s\n", FormatFullVersion());
+    LogPrintf("Kyan Core version %s\n", FormatFullVersion());
 }
 
 namespace { // Variables internal to initialization process only
@@ -1460,7 +1460,7 @@ static bool LockDataDirectory(bool probeOnly)
 {
     std::string strDataDir = GetDataDir().string();
 
-    // Make sure only a single Dash Core process is using the data directory.
+    // Make sure only a single Kyan Core process is using the data directory.
     fs::path pathLockFile = GetDataDir() / ".lock";
     FILE* file = fsbridge::fopen(pathLockFile, "a"); // empty lock file; created if it doesn't exist.
     if (file) fclose(file);
@@ -1722,16 +1722,16 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     // ********************************************************* Step 7a: check lite mode and load sporks
 
-    // lite mode disables all Dash-specific functionality
+    // lite mode disables all Kyan-specific functionality
     fLiteMode = gArgs.GetBoolArg("-litemode", false);
     LogPrintf("fLiteMode %d\n", fLiteMode);
 
     if(fLiteMode) {
-        InitWarning(_("You are starting in lite mode, most Dash-specific functionality is disabled."));
+        InitWarning(_("You are starting in lite mode, most Kyan-specific functionality is disabled."));
     }
 
     if((!fLiteMode && fTxIndex == false)
-       && chainparams.NetworkIDString() != CBaseChainParams::REGTEST) { // TODO remove this when pruning is fixed. See https://github.com/dashpay/dash/pull/1817 and https://github.com/dashpay/dash/pull/1743
+       && chainparams.NetworkIDString() != CBaseChainParams::REGTEST) { // TODO remove this when pruning is fixed. See https://github.com/kyanpay/kyan/pull/1817 and https://github.com/kyanpay/kyan/pull/1743
         return InitError(_("Transaction index can't be disabled in full mode. Either start with -litemode command line switch or enable transaction index."));
     }
 
@@ -2128,7 +2128,7 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
         }
     }
 
-    // ********************************************************* Step 10c: schedule Dash-specific tasks
+    // ********************************************************* Step 10c: schedule Kyan-specific tasks
 
     if (!fLiteMode) {
         scheduler.scheduleEvery(boost::bind(&CNetFulfilledRequestManager::DoMaintenance, boost::ref(netfulfilledman)), 60 * 1000);

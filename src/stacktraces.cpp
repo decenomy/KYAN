@@ -10,7 +10,7 @@
 #include "util.h"
 #include "utilstrencodings.h"
 
-#include "dash-config.h"
+#include "kyan-config.h"
 
 #include <mutex>
 #include <map>
@@ -401,7 +401,7 @@ static std::string GetCrashInfoStrNoDebugInfo(crash_info ci)
     CDataStream ds(SER_DISK, 0);
 
     crash_info_header hdr;
-    hdr.magic = "DashCrashInfo";
+    hdr.magic = "KyanCrashInfo";
     hdr.version = 1;
     hdr.exeFileName = g_exeFileBaseName;
     ds << hdr;
@@ -437,7 +437,7 @@ std::string GetCrashInfoStrFromSerializedStr(const std::string& ciStr)
         return "Error while deserializing crash info header";
     }
 
-    if (hdr.magic != "DashCrashInfo") {
+    if (hdr.magic != "KyanCrashInfo") {
         return "Invalid magic string";
     }
     if (hdr.version != 1) {

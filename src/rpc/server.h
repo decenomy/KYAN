@@ -137,7 +137,7 @@ public:
 };
 
 /**
- * Dash RPC command dispatcher.
+ * Kyan RPC command dispatcher.
  */
 class CRPCTable
 {

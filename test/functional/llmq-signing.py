@@ -6,7 +6,7 @@
 import time
 
 from test_framework.mininode import *
-from test_framework.test_framework import DashTestFramework
+from test_framework.test_framework import KyanTestFramework
 from test_framework.util import *
 
 '''
@@ -16,9 +16,9 @@ Checks LLMQs signing sessions
 
 '''
 
-class LLMQSigningTest(DashTestFramework):
+class LLMQSigningTest(KyanTestFramework):
     def set_test_params(self):
-        self.set_dash_test_params(6, 5, fast_dip3_enforcement=True)
+        self.set_kyan_test_params(6, 5, fast_dip3_enforcement=True)
 
     def run_test(self):
 

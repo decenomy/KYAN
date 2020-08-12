@@ -1,0 +1,6 @@
+usr/local/bin/kyan-qt usr/bin
+share/pixmaps/kyan32.xpm usr/share/pixmaps
+share/pixmaps/kyan16.xpm usr/share/pixmaps
+share/pixmaps/kyan128.png usr/share/pixmaps
+debian/kyan-qt.desktop usr/share/applications
+debian/kyan-qt.protocol usr/share/kde4/services/
