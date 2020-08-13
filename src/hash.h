@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
 // Copyright (c) 2014-2019 The Dash Core developers
+// Copyright (c) 2020-2020 The Kyan Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,6 +28,8 @@
 #include "crypto/sph_echo.h"
 
 #include <vector>
+#include <functional>
+#include <iostream>
 
 typedef uint256 ChainCode;
 
@@ -312,6 +315,27 @@ uint64_t SipHashUint256(uint64_t k0, uint64_t k1, const uint256& val);
 uint64_t SipHashUint256Extra(uint64_t k0, uint64_t k1, const uint256& val, uint32_t extra);
 
 /* ----------- Kyan Hash ------------------------------------------------ */
+
+const int HASHX11K_NUMBER_ITERATIONS = 64;
+
+extern std::function<uint512(const void *data, size_t len)> fnHashX11K[]; 
+
+template<typename T1>
+inline uint256 HashX11K(const T1 pbegin, const T1 pend)
+{
+    static unsigned char pblank[1];
+
+    // Iteration 0
+    uint512 h(fnHashX11K[0]((pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0])));
+
+    for(int i = 1; i < HASHX11K_NUMBER_ITERATIONS; i++) {
+        h = fnHashX11K[h.GetUint64(i % 8) % 11](static_cast<const void*>(&h), h.size());
+    }
+
+    return h.trim256();
+}
+
+/* ----------- Dash Hash ------------------------------------------------ */
 template<typename T1>
 inline uint256 HashX11(const T1 pbegin, const T1 pend)
 
