@@ -382,9 +382,9 @@ public:
 
     //    /////////////////////////////////////////////////////////////////
 
-        genesis = CreateGenesisBlock(1597214953, 696756, 0x1e0ffff0, 1, 1000 * COIN);
+        genesis = CreateGenesisBlock(1597214953, 74682, 0x1e0ffff0, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x000001dc6060639c2294f684eee5f85741d6b7befb9cd55471ee99c66583239a"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000bf46e6d43fe2da400a9390a04fa61dfd62f23c61664489e17700f98f994"));
         assert(genesis.hashMerkleRoot == uint256S("0xcdaa490fc0f837f5ad42d59208c2b58b0ea616134a865798d18d63f3e79632ef"));
 
         vSeeds.emplace_back("kyan-mainnet.572133.club", true);
@@ -472,7 +472,7 @@ public:
         consensus.DIP0001Height = 2;
         consensus.DIP0003Height = 2;
         consensus.DIP0003EnforcementHeight = 2;
-        consensus.DIP0003EnforcementHash = uint256S("0x0000095e92083d97cd31e72d78d37bad05de78f09f6a9572167210d40e324919");
+        consensus.DIP0003EnforcementHash = uint256S("0x00");
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Kyan: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Kyan: 2.5 minutes
@@ -594,9 +594,9 @@ public:
 
     //    /////////////////////////////////////////////////////////////////
 
-        genesis = CreateGenesisBlock(1597182068, 1309576, 0x1e0ffff0, 1, 1000 * COIN);
+        genesis = CreateGenesisBlock(1597182068, 1484206, 0x1e0ffff0, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000095e92083d97cd31e72d78d37bad05de78f09f6a9572167210d40e324919"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000e3b29b0d14367f3b9fa23ee5ca9aefe1cbe5c74039a268d2f4b44c27fda"));
         assert(genesis.hashMerkleRoot == uint256S("0xcdaa490fc0f837f5ad42d59208c2b58b0ea616134a865798d18d63f3e79632ef"));
 
         vFixedSeeds.clear();
