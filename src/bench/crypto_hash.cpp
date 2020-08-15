@@ -167,7 +167,7 @@ static void HASH_X11(benchmark::State& state)
     uint256 hash;
     std::vector<uint8_t> in(BUFFER_SIZE,0);
     while (state.KeepRunning())
-        hash = HashX11K(in.begin(), in.end());
+        hash = HashX11(in.begin(), in.end());
 }
 
 static void HASH_X11_0032b_single(benchmark::State& state)
@@ -175,7 +175,7 @@ static void HASH_X11_0032b_single(benchmark::State& state)
     uint256 hash;
     std::vector<uint8_t> in(32,0);
     while (state.KeepRunning())
-        hash = HashX11K(in.begin(), in.end());
+        hash = HashX11(in.begin(), in.end());
 }
 
 static void HASH_X11_0080b_single(benchmark::State& state)
@@ -183,7 +183,7 @@ static void HASH_X11_0080b_single(benchmark::State& state)
     uint256 hash;
     std::vector<uint8_t> in(80,0);
     while (state.KeepRunning())
-        hash = HashX11K(in.begin(), in.end());
+        hash = HashX11(in.begin(), in.end());
 }
 
 static void HASH_X11_0128b_single(benchmark::State& state)
@@ -191,7 +191,7 @@ static void HASH_X11_0128b_single(benchmark::State& state)
     uint256 hash;
     std::vector<uint8_t> in(128,0);
     while (state.KeepRunning())
-        hash = HashX11K(in.begin(), in.end());
+        hash = HashX11(in.begin(), in.end());
 }
 
 static void HASH_X11_0512b_single(benchmark::State& state)
@@ -199,7 +199,7 @@ static void HASH_X11_0512b_single(benchmark::State& state)
     uint256 hash;
     std::vector<uint8_t> in(512,0);
     while (state.KeepRunning())
-        hash = HashX11K(in.begin(), in.end());
+        hash = HashX11(in.begin(), in.end());
 }
 
 static void HASH_X11_1024b_single(benchmark::State& state)
@@ -207,7 +207,7 @@ static void HASH_X11_1024b_single(benchmark::State& state)
     uint256 hash;
     std::vector<uint8_t> in(1024,0);
     while (state.KeepRunning())
-        hash = HashX11K(in.begin(), in.end());
+        hash = HashX11(in.begin(), in.end());
 }
 
 static void HASH_X11_2048b_single(benchmark::State& state)
@@ -215,7 +215,7 @@ static void HASH_X11_2048b_single(benchmark::State& state)
     uint256 hash;
     std::vector<uint8_t> in(2048,0);
     while (state.KeepRunning())
-        hash = HashX11K(in.begin(), in.end());
+        hash = HashX11(in.begin(), in.end());
 }
 
 static void HASH_X11K(benchmark::State& state)
