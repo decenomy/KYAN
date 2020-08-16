@@ -255,7 +255,7 @@ public:
         consensus.DIP0001Height = 2;
         consensus.DIP0003Height = 2;
         consensus.DIP0003EnforcementHeight = 2;
-        consensus.DIP0003EnforcementHash = uint256S("0x000001dc6060639c2294f684eee5f85741d6b7befb9cd55471ee99c66583239a");
+        consensus.DIP0003EnforcementHash = uint256S("0x00");
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Kyan: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Kyan: 2.5 minutes
