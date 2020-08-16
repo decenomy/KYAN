@@ -243,19 +243,19 @@ public:
         consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
         consensus.nSuperblockStartBlock = 0; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
-        consensus.nSuperblockStartHash = uint256S("0x00000ab389c60b1c2231013cfcd0c90a21ebe902cccd085149db60a017a432da");
+        consensus.nSuperblockStartHash = uint256S("0x000001dc6060639c2294f684eee5f85741d6b7befb9cd55471ee99c66583239a");
         consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
         consensus.nMasternodeMinimumConfirmations = 15;
         consensus.BIP34Height = 1;
-        consensus.BIP34Hash = uint256S("0x00000ab389c60b1c2231013cfcd0c90a21ebe902cccd085149db60a017a432da");
+        consensus.BIP34Hash = uint256S("0x000001dc6060639c2294f684eee5f85741d6b7befb9cd55471ee99c66583239a");
         consensus.BIP65Height = 1; // 
         consensus.BIP66Height = 1; // 
         consensus.DIP0001Height = 2;
         consensus.DIP0003Height = 2;
         consensus.DIP0003EnforcementHeight = 2;
-        consensus.DIP0003EnforcementHash = uint256S("0x00000ab389c60b1c2231013cfcd0c90a21ebe902cccd085149db60a017a432da");
+        consensus.DIP0003EnforcementHash = uint256S("0x00");
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Kyan: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Kyan: 2.5 minutes
@@ -382,9 +382,9 @@ public:
 
     //    /////////////////////////////////////////////////////////////////
 
-        genesis = CreateGenesisBlock(1597214953, 364812, 0x1e0ffff0, 1, 1000 * COIN);
+        genesis = CreateGenesisBlock(1597214953, 74682, 0x1e0ffff0, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00000ab389c60b1c2231013cfcd0c90a21ebe902cccd085149db60a017a432da"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000bf46e6d43fe2da400a9390a04fa61dfd62f23c61664489e17700f98f994"));
         assert(genesis.hashMerkleRoot == uint256S("0xcdaa490fc0f837f5ad42d59208c2b58b0ea616134a865798d18d63f3e79632ef"));
 
         vSeeds.emplace_back("kyan-mainnet.572133.club", true);
@@ -466,13 +466,13 @@ public:
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
         consensus.BIP34Height = 1;
-        consensus.BIP34Hash = uint256S("0x00000baca5899daba3be1d5007bb038f507f7b92f2d09799bb2bb9813c9156e2");
+        consensus.BIP34Hash = uint256S("0x0000095e92083d97cd31e72d78d37bad05de78f09f6a9572167210d40e324919");
         consensus.BIP65Height = 1; // 
         consensus.BIP66Height = 1; // 
         consensus.DIP0001Height = 2;
         consensus.DIP0003Height = 2;
         consensus.DIP0003EnforcementHeight = 2;
-        consensus.DIP0003EnforcementHash = uint256S("0x00000baca5899daba3be1d5007bb038f507f7b92f2d09799bb2bb9813c9156e2");
+        consensus.DIP0003EnforcementHash = uint256S("0x00");
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Kyan: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Kyan: 2.5 minutes
@@ -532,8 +532,8 @@ public:
         nDefaultPort = 7584;
         nPruneAfterHeight = 1000;
 
-    //     // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
-    //    /////////////////////////////////////////////////////////////////
+    // //     // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
+    // //    /////////////////////////////////////////////////////////////////
 
 	// 	uint32_t nGenesisTime = 1597182068;  // Monday, August 10, 2020 1:56:00 PM GMT+03:00
 
@@ -594,9 +594,9 @@ public:
 
     //    /////////////////////////////////////////////////////////////////
 
-        genesis = CreateGenesisBlock(1597182068, 556444, 0x1e0ffff0, 1, 1000 * COIN);
+        genesis = CreateGenesisBlock(1597182068, 1484206, 0x1e0ffff0, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00000baca5899daba3be1d5007bb038f507f7b92f2d09799bb2bb9813c9156e2"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000e3b29b0d14367f3b9fa23ee5ca9aefe1cbe5c74039a268d2f4b44c27fda"));
         assert(genesis.hashMerkleRoot == uint256S("0xcdaa490fc0f837f5ad42d59208c2b58b0ea616134a865798d18d63f3e79632ef"));
 
         vFixedSeeds.clear();
@@ -809,7 +809,7 @@ public:
 
         genesis = CreateGenesisBlock(1597182768, 0, 0x207fffff, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x41513d21bc5d93ebb43870182e81dec99058c1b32e8e20d3cdec3d620b274e25"));
+        assert(consensus.hashGenesisBlock == uint256S("0x68da740df3d8440ac7ae49ec6d1cf57a60b5961b1b839695aa29506e31471c35"));
         assert(genesis.hashMerkleRoot == uint256S("0xcdaa490fc0f837f5ad42d59208c2b58b0ea616134a865798d18d63f3e79632ef"));
 
         devnetGenesis = FindDevNetGenesisBlock(consensus, genesis, 50 * COIN);
@@ -1001,9 +1001,9 @@ public:
 
 	// 	// return;
 
-        genesis = CreateGenesisBlock(1597182874, 2, 0x207fffff, 1, 1000 * COIN);
+        genesis = CreateGenesisBlock(1597182874, 0, 0x207fffff, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x1c7f6d310ccfb1ebca31f45a8ab5d9632e289dd1d4c33d9ba353e2876362114a"));
+        assert(consensus.hashGenesisBlock == uint256S("0x3d4d01827cb57da9004776a427933d3fbff153e3edd91610624631594ffb721f"));
         assert(genesis.hashMerkleRoot == uint256S("0xcdaa490fc0f837f5ad42d59208c2b58b0ea616134a865798d18d63f3e79632ef"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
