@@ -316,7 +316,8 @@ uint64_t SipHashUint256Extra(uint64_t k0, uint64_t k1, const uint256& val, uint3
 
 /* ----------- Kyan Hash ------------------------------------------------ */
 
-const int HASHX11K_NUMBER_ITERATIONS = 64;
+const unsigned char HASHX11K_NUMBER_ITERATIONS  = 64;
+const unsigned char HASHX11K_NUMBER_ALGOS       = 11;
 
 extern std::function<uint512(const void *data, size_t len)> fnHashX11K[]; 
 
@@ -329,7 +330,7 @@ inline uint256 HashX11K(const T1 pbegin, const T1 pend)
     uint512 h(fnHashX11K[0]((pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0])));
 
     for(int i = 1; i < HASHX11K_NUMBER_ITERATIONS; i++) {
-        h = fnHashX11K[h.GetUint64(i % 8) % 11](static_cast<const void*>(&h), h.size());
+        h = fnHashX11K[h.begin()[i % 64] % HASHX11K_NUMBER_ALGOS](static_cast<const void*>(&h), h.size());
     }
 
     return h.trim256();
