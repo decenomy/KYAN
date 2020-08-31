@@ -1014,17 +1014,17 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     double dDiff;
     CAmount nSubsidyBase;
 
-    if(nPrevHeight < 18) {
-        return 20000000 * COIN; // premine from SAPP (360M, burn the rest)
-    }
-
+/* This bug is irrelevant with Kyanite coin so commenting this out for now. It should be removed.
     if (nPrevHeight <= 4500 && Params().NetworkIDString() == CBaseChainParams::MAIN) {
-        /* a bug which caused diff to not be correctly calculated */
+        // a bug which caused diff to not be correctly calculated
         dDiff = (double)0x0000ffff / (double)(nPrevBits & 0x00ffffff);
     } else {
         dDiff = ConvertBitsToDouble(nPrevBits);
     }
+*/
 
+/* This is DASH conditions so commenting this out. It should be cleared before code release or may be cleared in the future releases
+ ***********************************************************************************************************************************
     if (nPrevHeight < 5465) {
         // Early ages...
         // 1111/((x+1)^2)
@@ -1043,6 +1043,28 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
         nSubsidyBase = (2222222.0 / (pow((dDiff+2600.0)/9.0,2.0)));
         if(nSubsidyBase > 25) nSubsidyBase = 25;
         else if(nSubsidyBase < 5) nSubsidyBase = 5;
+    }
+*/
+
+// The block reward schedule is a migration from SAPP reward schedule.
+    if (nPrevHeight < 18) {
+        return 20000000 * COIN; // premine from SAPP (360M, burn the rest)
+    } else if (nPrevHeight < 50001) {
+        nSubsidy = 1000 * COIN;
+    } else if (nPrevHeight < 100001) {
+        nSubsidy = 900 * COIN;
+    } else if (nPrevHeight < 150001) {
+        nSubsidy = 800 * COIN;
+    } else if (nPrevHeight < 200001) {
+        nSubsidy = 700 * COIN;
+    } else if (nPrevHeight < 250001) {
+        nSubsidy = 600 * COIN;
+    } else if (nPrevHeight < 300001) {
+        nSubsidy = 500 * COIN;
+    } else if (nPrevHeight < 350001) {
+        nSubsidy = 450 * COIN;
+    } else {
+        nSubsidy = 400 * COIN;
     }
 
     CAmount nSubsidy = nSubsidyBase * COIN;
