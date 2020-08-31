@@ -998,13 +998,13 @@ public:
 
 	// 	// std::cout << "Totals: hash algo " <<  " hits " << totalHits << " total " << totalTime << " avg " << totalTime/totalHits << std::endl;
 
-	// 	genesis.hashPrevBlock = TempHashHolding;
+	// // 	genesis.hashPrevBlock = TempHashHolding;
 
 	// 	// return;
 
-        genesis = CreateGenesisBlock(1597182874, 0, 0x207fffff, 1, 1000 * COIN);
+        genesis = CreateGenesisBlock(1597182874, 2, 0x207fffff, 1, 1000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x3d4d01827cb57da9004776a427933d3fbff153e3edd91610624631594ffb721f"));
+        assert(consensus.hashGenesisBlock == uint256S("0x78b8ba62e37fffc7f781ce7ea62434faa91c11aa374e200427cad3edda4ac012"));
         assert(genesis.hashMerkleRoot == uint256S("0xf087eb201e410c60a218a4986e89b69677020cad40048f6809072ab9304f0e9b"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
