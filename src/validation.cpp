@@ -1128,12 +1128,12 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
-    CAmount ret = blockValue * 0.45; // initial
+    CAmount ret = blockValue * 0.45; // Masternode payments for Kyanite will be 45% of the block reward.
 
-    // int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock; // Kyanite - we will decrease the payments instead
-    // int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod; // Kyanite - we will decrease the payments instead
+    // int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock;
+    // int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod;
 
-/* Masternode payments for Kyanite will be 45% of the block reward. Instead of increasing, we will decrease the amount of masternode rewards in value but not in percentage.
+/* DASH schedule
                                                                       // mainnet:
     if(nHeight > nMNPIBlock)                  ret += blockValue / 20; // 158000 - 25.0% - 2014-10-24
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 1)) ret += blockValue / 20; // 175280 - 30.0% - 2014-11-25
