@@ -1048,7 +1048,7 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 */
 
 /* The block reward schedule is a migration from SAPP reward schedule. */
-    if (nPrevHeight < 19) {
+    if (nPrevHeight < 18) {
         return 20000000 * COIN; // premine from SAPP (360M, burn the rest)
     } else if (nPrevHeight < 50001) {
         nSubsidyBase = 1000;
