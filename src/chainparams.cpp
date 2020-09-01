@@ -474,9 +474,9 @@ public:
         consensus.DIP0003Height = 2;
         consensus.DIP0003EnforcementHeight = 2;
         consensus.DIP0003EnforcementHash = uint256S("0x00");
-        consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
+        consensus.powLimit = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 8
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Kyan: 1 day
-        consensus.nPowTargetSpacing = 2.5 * 60; // Kyan: 2.5 minutes
+        consensus.nPowTargetSpacing = 15; // Kyan test: 15s
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 1; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
