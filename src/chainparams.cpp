@@ -647,7 +647,7 @@ public:
         checkpointData = (CCheckpointData) {
             {
                 {0, uint256S("0x000008ffd3159ada80b2100919e982f22293a710968e12a5472871594103b81a")},
-            }
+            } 
         };
 
         chainTxData = ChainTxData{
