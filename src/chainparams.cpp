@@ -461,13 +461,13 @@ public:
         consensus.nBudgetPaymentsCycleBlocks = 50;
         consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nSuperblockStartBlock = 2; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
-        consensus.nSuperblockStartHash = uint256(); // do not check this on testnet
+        consensus.nSuperblockStartHash = uint256S("0x00");
         consensus.nSuperblockCycle = 24; // Superblocks can be issued hourly on testnet
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
         consensus.BIP34Height = 1;
-        consensus.BIP34Hash = uint256S("0000045c8e0fdabaae25113f8731099642ca4c00ce319e06e1ea7f907e8e7c3d");
+        consensus.BIP34Hash = uint256S("0x00");
         consensus.BIP65Height = 1; // 
         consensus.BIP66Height = 1; // 
         consensus.DIP0001Height = 2;
@@ -646,7 +646,7 @@ public:
 
         checkpointData = (CCheckpointData) {
             {
-                {0, uint256S("0x00")},
+                {0, uint256S("0x000008ffd3159ada80b2100919e982f22293a710968e12a5472871594103b81a")},
             }
         };
 
