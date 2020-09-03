@@ -474,9 +474,9 @@ public:
         consensus.DIP0003Height = 2;
         consensus.DIP0003EnforcementHeight = 2;
         consensus.DIP0003EnforcementHash = uint256S("0x00");
-        consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
+        consensus.powLimit = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 8
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Kyan: 1 day
-        consensus.nPowTargetSpacing = 2.5 * 60; // Kyan: 2.5 minutes
+        consensus.nPowTargetSpacing = 15; // Kyan Testnet: 15s
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 1; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
@@ -536,7 +536,7 @@ public:
         //     // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
         //    /////////////////////////////////////////////////////////////////
 
-		// uint32_t nGenesisTime = 1597182068;  // Monday, August 10, 2020 1:56:00 PM GMT+03:00
+		// uint32_t nGenesisTime = 1599121377;  // 09/03/2020 @ 8:22am (UTC)
 
 		// arith_uint256 test;
 		// bool fNegative;
@@ -595,9 +595,9 @@ public:
 
         //    /////////////////////////////////////////////////////////////////
 
-        genesis = CreateGenesisBlock(1597182068, 821563, 0x1e0ffff0, 1, 0 * COIN);
+        genesis = CreateGenesisBlock(1599121377, 43494, 0x1e0ffff0, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x000008ffd3159ada80b2100919e982f22293a710968e12a5472871594103b81a"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000d1845771216977301bd43c7c7384a0d3b07229ba90794619ad3cf8129bc"));
         assert(genesis.hashMerkleRoot == uint256S("0xeb7f1affc1fc9293d24ca0f89401cec78743f46ddc17985bc4edd554f8c4486f"));
 
         vFixedSeeds.clear();
