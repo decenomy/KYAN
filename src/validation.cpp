@@ -1119,14 +1119,14 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     }
 
     // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
-    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy / 10 : 0;
 
     return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
 }
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
-    CAmount ret = blockValue * 0.45; // Masternode payments for Kyanite will be 45% of the block reward.
+    CAmount ret = blockValue / 2; // Masternode payments for Kyanite will be 45% (50% of 90%) of the block reward.
 
     // int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock;
     // int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod;
