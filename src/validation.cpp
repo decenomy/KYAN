@@ -1014,13 +1014,18 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     double dDiff;
     CAmount nSubsidyBase;
 
+/* This bug is irrelevant with Kyanite coin so commenting this out for now. It should be removed.
+ ************************************************************************************************
     if (nPrevHeight <= 4500 && Params().NetworkIDString() == CBaseChainParams::MAIN) {
-        /* a bug which caused diff to not be correctly calculated */
+        // a bug which caused diff to not be correctly calculated
         dDiff = (double)0x0000ffff / (double)(nPrevBits & 0x00ffffff);
     } else {
         dDiff = ConvertBitsToDouble(nPrevBits);
     }
+*/
+	dDiff = ConvertBitsToDouble(nPrevBits);
 
+/*
     if (nPrevHeight < 5465) {
         // Early ages...
         // 1111/((x+1)^2)
@@ -1040,13 +1045,73 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
         if(nSubsidyBase > 25) nSubsidyBase = 25;
         else if(nSubsidyBase < 5) nSubsidyBase = 5;
     }
+*/
+
+/* The block reward schedule is a migration from SAPP reward schedule. */
+    if (nPrevHeight < 18) {
+        return 20000000 * COIN; // premine from SAPP (360M, burn the rest)
+    } else if (nPrevHeight < 20000) {
+        nSubsidyBase = 2250;
+    } else if (nPrevHeight < 40000) {
+        nSubsidyBase = 2000;
+    } else if (nPrevHeight < 60000) {
+        nSubsidyBase = 1750;
+    } else if (nPrevHeight < 80000) {
+        nSubsidyBase = 1500;
+    } else if (nPrevHeight < 100000) {
+        nSubsidyBase = 1250;
+    } else if (nPrevHeight < 120000) {
+        nSubsidyBase = 1125;
+    } else {
+        nSubsidyBase = 1000;
+    }
+
+    // if (nPrevHeight < 18) {
+    //     return 20000000 * COIN; // premine from SAPP (360M, burn the rest)
+    // } else if (nPrevHeight < 50001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 500) nSubsidyBase = 500;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 100001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 450) nSubsidyBase = 450;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 150001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 400) nSubsidyBase = 400;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 200001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 350) nSubsidyBase = 350;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 250001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 300) nSubsidyBase = 300;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 300001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 250) nSubsidyBase = 250;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 350001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 225) nSubsidyBase = 225;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 200) nSubsidyBase = 200;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // }
+
 
     CAmount nSubsidy = nSubsidyBase * COIN;
 
+/* We do not use consensusParams.nSubsidyHalvingInterval for Kyanite coin but instead we use the reward schedule given above.
+ ****************************************************************************************************************************
     // yearly decline of production by ~7.1% per year, projected ~18M coins max by year 2050+.
     for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
         nSubsidy -= nSubsidy/14;
     }
+*/
 
     // this is only active on devnets
     if (nPrevHeight < consensusParams.nHighSubsidyBlocks) {
@@ -1054,18 +1119,19 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     }
 
     // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
-    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy / 10 : 0;
 
     return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
 }
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
-    CAmount ret = blockValue/5; // start at 20%
+    CAmount ret = blockValue / 2; // Masternode payments for Kyanite will be 45% (50% of 90%) of the block reward.
 
-    int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock;
-    int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod;
+    // int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock;
+    // int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod;
 
+/* DASH schedule
                                                                       // mainnet:
     if(nHeight > nMNPIBlock)                  ret += blockValue / 20; // 158000 - 25.0% - 2014-10-24
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 1)) ret += blockValue / 20; // 175280 - 30.0% - 2014-11-25
@@ -1075,9 +1141,9 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 5)) ret += blockValue / 40; // 244400 - 42.5% - 2015-03-30
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 6)) ret += blockValue / 40; // 261680 - 45.0% - 2015-05-01
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 7)) ret += blockValue / 40; // 278960 - 47.5% - 2015-06-01
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 9)) ret += blockValue / 40; // 313520 - 50.0% - 2015-08-03
+*/
 
-    return ret;
+   return ret;
 }
 
 bool IsInitialBlockDownload()

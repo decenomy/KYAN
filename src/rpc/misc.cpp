@@ -222,6 +222,10 @@ public:
         if (pwallet && pwallet->GetPubKey(keyID, vchPubKey)) {
             obj.push_back(Pair("pubkey", HexStr(vchPubKey)));
             obj.push_back(Pair("iscompressed", vchPubKey.IsCompressed()));
+
+            if(vchPubKey.IsCompressed() && vchPubKey.Decompress()) {
+                obj.push_back(Pair("pubkey_uncompressed", HexStr(vchPubKey)));
+            }
         }
         return obj;
     }

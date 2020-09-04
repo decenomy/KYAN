@@ -135,3 +135,4 @@ make
 # CLion
 .idea
 cmake-build-debug
+.vscode/
