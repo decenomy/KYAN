@@ -119,7 +119,7 @@ struct LLMQParams {
 struct Params {
     uint256 hashGenesisBlock;
     uint256 hashDevnetGenesisBlock;
-    int nSubsidyHalvingInterval;
+    //int nSubsidyHalvingInterval;
     int nMasternodePaymentsStartBlock;
     int nMasternodePaymentsIncreaseBlock;
     int nMasternodePaymentsIncreasePeriod; // in blocks
