@@ -62,6 +62,22 @@
         <file alias="Light">res/css/light.css</file>
         <file alias="Traditional">res/css/trad.css</file>
     </qresource>
+    <qresource prefix="/font">
+        <file alias="Nunito-Black.ttf">res/fonts/Nunito-Black.ttf</file>
+        <file alias="Nunito-BlackItalic.ttf">res/fonts/Nunito-BlackItalic.ttf</file>
+        <file alias="Nunito-Bold.ttf">res/fonts/Nunito-Bold.ttf</file>
+        <file alias="Nunito-BoldItalic.ttf">res/fonts/Nunito-BoldItalic.ttf</file>
+        <file alias="Nunito-ExtraBold.ttf">res/fonts/Nunito-ExtraBold.ttf</file>
+        <file alias="Nunito-ExtraBoldItalic.ttf">res/fonts/Nunito-ExtraBoldItalic.ttf</file>
+        <file alias="Nunito-ExtraLight.ttf">res/fonts/Nunito-ExtraLight.ttf</file>
+        <file alias="Nunito-ExtraLightItalic.ttf">res/fonts/Nunito-ExtraLightItalic.ttf</file>
+        <file alias="Nunito-Italic.ttf">res/fonts/Nunito-Italic.ttf</file>
+        <file alias="Nunito-Light.ttf">res/fonts/Nunito-Light.ttf</file>
+        <file alias="Nunito-LightItalic.ttf">res/fonts/Nunito-LightItalic.ttf</file>
+        <file alias="Nunito-Regular.ttf">res/fonts/Nunito-Regular.ttf</file>
+        <file alias="Nunito-SemiBold.ttf">res/fonts/Nunito-SemiBold.ttf</file>
+        <file alias="Nunito-SemiBoldItalic.ttf">res/fonts/Nunito-SemiBoldItalic.ttf</file>
+    </qresource>
     <qresource prefix="/images">
         <file alias="arrow_down">res/images/arrow_down.png</file>
         <file alias="arrow_down_small">res/images/arrow_down_small.png</file>

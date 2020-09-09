@@ -54,6 +54,7 @@
 #include <QThread>
 #include <QTimer>
 #include <QTranslator>
+#include <QFontDatabase>
 
 #if defined(QT_STATICPLUGIN)
 #include <QtPlugin>
@@ -627,6 +628,22 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationDomain(QAPP_ORG_DOMAIN);
     QApplication::setApplicationName(QAPP_APP_NAME_DEFAULT);
     GUIUtil::SubstituteFonts(GetLangTerritory());
+
+    // Add custom app font
+    QFontDatabase::addApplicationFont(":/font/Nunito-Black.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-BlackItalic.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-Bold.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-BoldItalic.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-ExtraBold.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-ExtraBoldItalic.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-ExtraLight.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-ExtraLightItalic.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-Italic.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-Light.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-LightItalic.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-Regular.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-SemiBold.ttf");
+    QFontDatabase::addApplicationFont(":/font/Nunito-SemiBoldItalic.ttf");
 
     /// 4. Initialization of translations, so that intro dialog is in user's language
     // Now that QSettings are accessible, initialize translations
