@@ -244,13 +244,13 @@ public:
         consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
         consensus.nSuperblockStartBlock = 2; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
-        consensus.nSuperblockStartHash = uint256S("0x000001dc6060639c2294f684eee5f85741d6b7befb9cd55471ee99c66583239a");
+        consensus.nSuperblockStartHash = uint256S("0x00");
         consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
         consensus.nMasternodeMinimumConfirmations = 15;
         consensus.BIP34Height = 1;
-        consensus.BIP34Hash = uint256S("0x000001dc6060639c2294f684eee5f85741d6b7befb9cd55471ee99c66583239a");
+        consensus.BIP34Hash = uint256S("0x00");
         consensus.BIP65Height = 1; // 
         consensus.BIP66Height = 1; // 
         consensus.DIP0001Height = 2;
