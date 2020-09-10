@@ -75,13 +75,12 @@ static CBlock CreateDevNetGenesisBlock(const uint256 &prevBlockHash, const std::
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-	// pszTimestamp = Headline: https://cointelegraph.com/news/blockchain-gaming-ceo-cryptographic-tokens-will-usher-gaming-renaissance
-    const char* pszTimestamp = "COINTELEGRAPH 17/Jul/2020 Blockchain Gaming CEO: Cryptographic Tokens Will Usher Gaming 'Renaissance'";
+	// pszTimestamp = Headline: https://cointelegraph.com/news/another-defi-exit-scam-just-made-off-with-20m-in-investor-funds
+    const char* pszTimestamp = "COINTELEGRAPH 10/Sep/2020 Another DeFi exit scam just made off with $20M in investor funds";
     CScript genesisOutputScript = CScript() << ParseHex("0448790ec8f49697a1b0089fd998e932231ba4728c8c3edc2b50b65821e58b441117036ff66337ea5021baf94e29ea83117e885d67018654d0869bbe2eb1d74dd6") << OP_CHECKSIG;
     
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
-
 
 void CChainParams::UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout, int64_t nWindowSize, int64_t nThreshold)
 {
@@ -321,10 +320,10 @@ public:
         nDefaultPort = 7577;
         nPruneAfterHeight = 100000;
 
-        //     // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
-        //    /////////////////////////////////////////////////////////////////
+        // // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
+        // /////////////////////////////////////////////////////////////////
 
-        // uint32_t nGenesisTime = 1599764400;  // 09/10/2020 @ 7:00pm (UTC)
+        // uint32_t nGenesisTime = 1599766364; // 09/10/2020 @ 7:32pm (UTC)
 
         // arith_uint256 test;
         // bool fNegative;
@@ -377,19 +376,27 @@ public:
 
         // // std::cout << "Totals: hash algo " <<  " hits " << totalHits << " total " << totalTime << " avg " << totalTime/totalHits << std::endl;
 
-        // genesis.hashPrevBlock = TempHashHolding;
-
         // exit(0);
 
-        //    /////////////////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////////////////
 
-        genesis = CreateGenesisBlock(1599764400, 1373574, 0x1e0ffff0, 1, 0 * COIN);
+        genesis = CreateGenesisBlock(1599766364, 112122, 0x1e0ffff0, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x000005a8a5243436dc02c284b13c0e33f2c3fbe1b6195d3555c07f40b1907b9a"));
-        assert(genesis.hashMerkleRoot == uint256S("0xeb7f1affc1fc9293d24ca0f89401cec78743f46ddc17985bc4edd554f8c4486f"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000551e93eb0749d40dfafd54b092e78d6612b47bd40de8d099818f65f53c1"));
+        assert(genesis.hashMerkleRoot == uint256S("0x17c6d46ee4758572534f6dec116f61268fe883caa99062c1efd764bbbc975d71"));
 
         vSeeds.emplace_back("kyan-mainnet.572133.club", true);
         vSeeds.emplace_back("kyan-mainnet2.572133.club", true);
+        vSeeds.emplace_back("seed1.sappcoin.com", true);
+        vSeeds.emplace_back("seed2.sappcoin.com", true);
+        vSeeds.emplace_back("seed3.sappcoin.com", true);
+        vSeeds.emplace_back("seed4.sappcoin.com", true);
+        vSeeds.emplace_back("seed5.sappcoin.com", true);
+        vSeeds.emplace_back("seed6.sappcoin.com", true);
+        vSeeds.emplace_back("seed7.sappcoin.com", true);
+        vSeeds.emplace_back("seed8.sappcoin.com", true);
+        vSeeds.emplace_back("seed9.sappcoin.com", true);
+        vSeeds.emplace_back("seed10.sappcoin.com", true);
 
         // Kyan addresses start with 'K'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,46);
@@ -405,7 +412,7 @@ public:
         // Kyan BIP44 coin type is '5'
         nExtCoinType = 5;
 
-        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
+        //vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
         // long living quorum params
         consensus.llmqs[Consensus::LLMQ_50_60] = llmq50_60;
@@ -425,19 +432,20 @@ public:
         nPoolMaxParticipants = 5;
         nFulfilledRequestExpireTime = 60*60; // fulfilled requests expire in 1 hour
 
-        vSporkAddresses = {"KqgTn6QihbrFujDsmDaUDQX1kMD34tCHE2"};
+        vSporkAddresses = {"KkhN7e4sxiWJM8mr9dvRHGp3MposQueyLx"};
         nMinSporkKeys = 1;
         fBIP9CheckMasternodesUpgraded = true;
 
         checkpointData = (CCheckpointData) {
             {
-                {0, uint256S("0x00")},
+                { 0,  uint256S("0x00000551e93eb0749d40dfafd54b092e78d6612b47bd40de8d099818f65f53c1") },
+                { 18, uint256S("0x000001a4c7126daa607436d36bd65803543a6781ee5f8a71cf03a31f51f0f7dd") },
             }
         };
 
         chainTxData = ChainTxData{
-            1597214953, // * UNIX timestamp of last known number of transactions (Block 1173619)
-            0,   // * total number of transactions between genesis and that timestamp
+            1599770489, // * UNIX timestamp of last known number of transactions (Block 1173619)
+            0,          // * total number of transactions between genesis and that timestamp
                         //   (the tx=... number in the SetBestChain debug.log lines)
             0.2         // * estimated number of transactions per second after that timestamp
         };
@@ -533,10 +541,10 @@ public:
         nDefaultPort = 7584;
         nPruneAfterHeight = 1000;
 
-        //     // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
-        //    /////////////////////////////////////////////////////////////////
+        // // This is used inorder to mine the genesis block. Once found, we can use the nonce and block hash found to create a valid genesis block
+        // /////////////////////////////////////////////////////////////////
 
-		// uint32_t nGenesisTime = 1599159309;  // 09/03/2020 @ 6:55pm (UTC)
+		// uint32_t nGenesisTime = 1599766365; // 09/10/2020 @ 7:32pm (UTC)
 
 		// arith_uint256 test;
 		// bool fNegative;
@@ -589,24 +597,32 @@ public:
 
 		// // std::cout << "Totals: hash algo " <<  " hits " << totalHits << " total " << totalTime << " avg " << totalTime/totalHits << std::endl;
 
-		// genesis.hashPrevBlock = TempHashHolding;
-
         // exit(0);
 
-        //    /////////////////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////////////////
 
-        genesis = CreateGenesisBlock(1599159309, 1246628, 0x1e0ffff0, 1, 0 * COIN);
+        genesis = CreateGenesisBlock(1599766365, 505453, 0x1e0ffff0, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000030c7c404a5084d14e747f989e9c99b9151fc048d25cdc69de4cac793c08"));
-        assert(genesis.hashMerkleRoot == uint256S("0xeb7f1affc1fc9293d24ca0f89401cec78743f46ddc17985bc4edd554f8c4486f"));
+        assert(consensus.hashGenesisBlock == uint256S("0x000000313693c8b25165dbdc8498b8c0084fa24ffea6a02765733700fbcf7467"));
+        assert(genesis.hashMerkleRoot == uint256S("0x17c6d46ee4758572534f6dec116f61268fe883caa99062c1efd764bbbc975d71"));
 
         vFixedSeeds.clear();
-        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
+        //vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
         vSeeds.emplace_back("kyan-testnet.572133.club", true);
         vSeeds.emplace_back("kyan-testnet2.572133.club", true);
+        vSeeds.emplace_back("seed1.sappcoin.com", true);
+        vSeeds.emplace_back("seed2.sappcoin.com", true);
+        vSeeds.emplace_back("seed3.sappcoin.com", true);
+        vSeeds.emplace_back("seed4.sappcoin.com", true);
+        vSeeds.emplace_back("seed5.sappcoin.com", true);
+        vSeeds.emplace_back("seed6.sappcoin.com", true);
+        vSeeds.emplace_back("seed7.sappcoin.com", true);
+        vSeeds.emplace_back("seed8.sappcoin.com", true);
+        vSeeds.emplace_back("seed9.sappcoin.com", true);
+        vSeeds.emplace_back("seed10.sappcoin.com", true);
 
         // Testnet Kyan addresses start with 'k'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,107);
@@ -646,13 +662,14 @@ public:
 
         checkpointData = (CCheckpointData) {
             {
-                {0, uint256S("0x000008ffd3159ada80b2100919e982f22293a710968e12a5472871594103b81a")},
+                { 0,  uint256S("0x000000313693c8b25165dbdc8498b8c0084fa24ffea6a02765733700fbcf7467") },
+                { 18, uint256S("0x00000a0bb5b3865821cd8a6b18be6b8253a6c214c772d349f27cab9c0d1d4cc8") },
             } 
         };
 
         chainTxData = ChainTxData{
-            1597182068, // * UNIX timestamp of last known number of transactions (Block 213054)
-            0,    // * total number of transactions between genesis and that timestamp
+            1599770496, // * UNIX timestamp of last known number of transactions (Block 213054)
+            0,          // * total number of transactions between genesis and that timestamp
                         //   (the tx=... number in the SetBestChain debug.log lines)
             0.01        // * estimated number of transactions per second after that timestamp
         };
