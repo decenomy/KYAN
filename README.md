@@ -1,77 +1,131 @@
-Dash Core staging tree 0.15
+Kyan Core staging tree 0.15
 ===========================
 
-`master:` [![Build Status](https://travis-ci.org/dashpay/dash.svg?branch=master)](https://travis-ci.org/dashpay/dash) `develop:` [![Build Status](https://travis-ci.org/dashpay/dash.svg?branch=develop)](https://travis-ci.org/dashpay/dash/branches)
-
-https://www.dash.org
+https://www.kyancoin.net
 
 
-What is Dash?
+What is Kyan?
 -------------
 
-Dash is an experimental digital currency that enables instant, private
-payments to anyone, anywhere in the world. Dash uses peer-to-peer technology
+Kyan is a fork of [DASH](https://github.com/dashpay/dash). 
+It is an digital currency that enables instant, private
+payments to anyone, anywhere in the world. Kyan uses peer-to-peer technology
 to operate with no central authority: managing transactions and issuing money
-are carried out collectively by the network. Dash Core is the name of the open
+are carried out collectively by the network. Kyan Core is the name of the open
 source software which enables the use of this currency.
 
 For more information, as well as an immediately useable, binary version of
-the Dash Core software, see https://www.dash.org/get-dash/.
+the Kyan Core software, see https://www.kyancoin.net/.
 
 
 License
 -------
 
-Dash Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+Kyan Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.
 
 Development Process
 -------------------
 
 The `master` branch is meant to be stable. Development is normally done in separate branches.
-[Tags](https://github.com/dashpay/dash/tags) are created to indicate new official,
-stable release versions of Dash Core.
+[Tags](https://github.com/kyancoin/kyan/tags) are created to indicate new official,
+stable release versions of Kyan Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Testing
 -------
 
-Testing and code review is the bottleneck for development; we get more pull
-requests than we can review and test on short notice. Please be patient and help out by testing
-other people's pull requests, and remember this is a security-critical project where any mistake might cost people
-lots of money.
+Testing and code review is an essential part of development. 
+We like to have anyone who is willing to participate in contribution to Kyanite Projects to send their contributions via pull requests done to 'develop' branch.
 
-### Automated Testing
+### Masternode collateral and reward table
+Masternode collateral of Kyanite Coin is 200000 KYAN
 
-Developers are strongly encouraged to write [unit tests](src/test/README.md) for new code, and to
-submit new unit tests for old code. Unit tests can be compiled and run
-(assuming they weren't disabled in configure) with: `make check`. Further details on running
-and extending unit tests can be found in [/src/test/README.md](/src/test/README.md).
+Rewards Table
+-------------
+10% of the block reward will be sent as superblocks at every block for the Governance.
 
-There are also [regression and integration tests](/test), written
-in Python, that are run automatically on the build server.
-These tests can be run (if the [test dependencies](/test) are installed) with: `test/functional/test_runner.py`
-
-The Travis CI system makes sure that every pull request is built for Windows, Linux, and OS X, and that unit/sanity tests are run automatically.
-
-### Manual Quality Assurance (QA) Testing
-
-Changes should be tested by somebody other than the developer who wrote the
-code. This is especially important for large or high-risk changes. It is useful
-to add a test plan to the pull request description if testing the changes is
-not straightforward.
-
-Translations
-------------
-
-Changes to translations as well as new translations can be submitted to
-[Dash Core's Transifex page](https://www.transifex.com/projects/p/dash/).
-
-Translations are periodically pulled from Transifex and merged into the git repository. See the
-[translation process](doc/translation_process.md) for details on how this works.
-
-**Important**: We do not accept translation changes as GitHub pull requests because the next
-pull from Transifex would automatically overwrite them again.
-
-Translators should also follow the [forum](https://www.dash.org/forum/topic/dash-worldwide-collaboration.88/).
+<table border=0 cellpadding=0 cellspacing=0 width=701 class=xl6553517252
+ style='border-collapse:collapse;table-layout:fixed;width:528pt'>
+ <col class=xl6553517252 width=139 style='mso-width-source:userset;mso-width-alt:
+ 4785;width:104pt'>
+ <col class=xl6553517252 width=107 span=2 style='mso-width-source:userset;
+ mso-width-alt:3702;width:81pt'>
+ <col class=xl6553517252 width=134 style='mso-width-source:userset;mso-width-alt:
+ 4608;width:100pt'>
+ <col class=xl6553517252 width=107 span=2 style='mso-width-source:userset;
+ mso-width-alt:3702;width:81pt'>
+ <tr height=21 style='mso-height-source:userset;height:15.75pt'>
+  <td height=21 class=xl6317252 width=150 style='height:15.75pt;width:104pt'>Block</td>
+  <td class=xl6317252 width=107 style='width:81pt'>Collateral</td>
+  <td class=xl6317252 width=107 style='width:81pt'>Block Reward</td>
+  <td class=xl6317252 width=107 style='width:81pt'>MN Reward %</td>
+  <td class=xl6317252 width=134 style='width:100pt'>Mining Reward %</td>
+  <td class=xl6317252 width=107 style='width:81pt'>MN Reward</td>
+  <td class=xl6317252 width=107 style='width:81pt'>Mining Reward</td>
+ </tr>
+ <tr height=21 style='mso-height-source:userset;height:15.75pt'>
+  <td height=21 class=xl6417252 style='height:15.75pt'>18-20000</td>
+  <td class=xl6517252>200000</td>
+  <td class=xl6617252>2250</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6717252 align=right>1012.5</td>
+  <td class=xl6817252 align=right>1012.5</td>
+ </tr>
+   <tr height=21 style='mso-height-source:userset;height:15.75pt'>
+  <td height=21 class=xl6417252 style='height:15.75pt'>20001-40000</td>
+  <td class=xl6517252>200000</td>
+  <td class=xl6617252>2000</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6717252 align=right>900</td>
+  <td class=xl6817252 align=right>900</td>
+ </tr>
+    <tr height=21 style='mso-height-source:userset;height:15.75pt'>
+  <td height=21 class=xl6417252 style='height:15.75pt'>40001-60000</td>
+  <td class=xl6517252>200000</td>
+  <td class=xl6617252>1750</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6717252 align=right>787.5</td>
+  <td class=xl6817252 align=right>787.5</td>
+ </tr>
+     <tr height=21 style='mso-height-source:userset;height:15.75pt'>
+  <td height=21 class=xl6417252 style='height:15.75pt'>60001-80000</td>
+  <td class=xl6517252>200000</td>
+  <td class=xl6617252>1500</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6717252 align=right>675</td>
+  <td class=xl6817252 align=right>675</td>
+ </tr>
+     <tr height=21 style='mso-height-source:userset;height:15.75pt'>
+  <td height=21 class=xl6417252 style='height:15.75pt'>80001-100000</td>
+  <td class=xl6517252>200000</td>
+  <td class=xl6617252>1250</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6717252 align=right>562.5</td>
+  <td class=xl6817252 align=right>562.5</td>
+ </tr>
+     <tr height=21 style='mso-height-source:userset;height:15.75pt'>
+  <td height=21 class=xl6417252 style='height:15.75pt'>100001-120000</td>
+  <td class=xl6517252>200000</td>
+  <td class=xl6617252>1125</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6717252 align=right>506.25</td>
+  <td class=xl6817252 align=right>506.25</td>
+ </tr>
+ <tr height=21 style='mso-height-source:userset;height:15.75pt'>
+  <td height=21 class=xl6417252 style='height:15.75pt'>120001+</td>
+  <td class=xl6517252>200000</td>
+  <td class=xl6617252>1000</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6617252>45</td>
+  <td class=xl6717252 align=right>450</td>
+  <td class=xl6817252 align=right>450</td>
+ </tr>
+ </table>

@@ -1,0 +1,25 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/translations">
+        <file alias="ar">locale/kyan_ar.qm</file>
+        <file alias="bg">locale/kyan_bg.qm</file>
+        <file alias="de">locale/kyan_de.qm</file>
+        <file alias="en">locale/kyan_en.qm</file>
+        <file alias="es">locale/kyan_es.qm</file>
+        <file alias="fi">locale/kyan_fi.qm</file>
+        <file alias="fr">locale/kyan_fr.qm</file>
+        <file alias="it">locale/kyan_it.qm</file>
+        <file alias="ja">locale/kyan_ja.qm</file>
+        <file alias="ko">locale/kyan_ko.qm</file>
+        <file alias="nl">locale/kyan_nl.qm</file>
+        <file alias="pl">locale/kyan_pl.qm</file>
+        <file alias="pt">locale/kyan_pt.qm</file>
+        <file alias="ro">locale/kyan_ro.qm</file>
+        <file alias="ru">locale/kyan_ru.qm</file>
+        <file alias="sk">locale/kyan_sk.qm</file>
+        <file alias="th">locale/kyan_th.qm</file>
+        <file alias="tr">locale/kyan_tr.qm</file>
+        <file alias="vi">locale/kyan_vi.qm</file>
+        <file alias="zh_CN">locale/kyan_zh_CN.qm</file>
+        <file alias="zh_TW">locale/kyan_zh_TW.qm</file>
+    </qresource>
+</RCC>

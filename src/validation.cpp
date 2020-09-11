@@ -61,7 +61,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Dash Core cannot be compiled without assertions."
+# error "Kyan Core cannot be compiled without assertions."
 #endif
 
 /**
@@ -594,7 +594,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         {
             const CTransaction *ptxConflicting = itConflicting->second;
 
-            // Transaction conflicts with mempool and RBF doesn't exist in Dash
+            // Transaction conflicts with mempool and RBF doesn't exist in Kyan
             return state.Invalid(false, REJECT_DUPLICATE, "txn-mempool-conflict");
         }
     }
@@ -1014,13 +1014,18 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     double dDiff;
     CAmount nSubsidyBase;
 
+/* This bug is irrelevant with Kyanite coin so commenting this out for now. It should be removed.
+ ************************************************************************************************
     if (nPrevHeight <= 4500 && Params().NetworkIDString() == CBaseChainParams::MAIN) {
-        /* a bug which caused diff to not be correctly calculated */
+        // a bug which caused diff to not be correctly calculated
         dDiff = (double)0x0000ffff / (double)(nPrevBits & 0x00ffffff);
     } else {
         dDiff = ConvertBitsToDouble(nPrevBits);
     }
+*/
+	dDiff = ConvertBitsToDouble(nPrevBits);
 
+/*
     if (nPrevHeight < 5465) {
         // Early ages...
         // 1111/((x+1)^2)
@@ -1040,13 +1045,73 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
         if(nSubsidyBase > 25) nSubsidyBase = 25;
         else if(nSubsidyBase < 5) nSubsidyBase = 5;
     }
+*/
+
+/* The block reward schedule is a migration from SAPP reward schedule. */
+    if (nPrevHeight < 18) {
+        return 20000000 * COIN; // premine from SAPP (360M, burn the rest)
+    } else if (nPrevHeight < 20000) {
+        nSubsidyBase = 2250;
+    } else if (nPrevHeight < 40000) {
+        nSubsidyBase = 2000;
+    } else if (nPrevHeight < 60000) {
+        nSubsidyBase = 1750;
+    } else if (nPrevHeight < 80000) {
+        nSubsidyBase = 1500;
+    } else if (nPrevHeight < 100000) {
+        nSubsidyBase = 1250;
+    } else if (nPrevHeight < 120000) {
+        nSubsidyBase = 1125;
+    } else {
+        nSubsidyBase = 1000;
+    }
+
+    // if (nPrevHeight < 18) {
+    //     return 20000000 * COIN; // premine from SAPP (360M, burn the rest)
+    // } else if (nPrevHeight < 50001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 500) nSubsidyBase = 500;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 100001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 450) nSubsidyBase = 450;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 150001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 400) nSubsidyBase = 400;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 200001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 350) nSubsidyBase = 350;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 250001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 300) nSubsidyBase = 300;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 300001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 250) nSubsidyBase = 250;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else if (nPrevHeight < 350001) {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 225) nSubsidyBase = 225;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // } else {
+    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
+    //     if(nSubsidyBase > 200) nSubsidyBase = 200;
+    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
+    // }
+
 
     CAmount nSubsidy = nSubsidyBase * COIN;
 
+/* We do not use consensusParams.nSubsidyHalvingInterval for Kyanite coin but instead we use the reward schedule given above.
+ ****************************************************************************************************************************
     // yearly decline of production by ~7.1% per year, projected ~18M coins max by year 2050+.
     for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
         nSubsidy -= nSubsidy/14;
     }
+*/
 
     // this is only active on devnets
     if (nPrevHeight < consensusParams.nHighSubsidyBlocks) {
@@ -1054,18 +1119,19 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     }
 
     // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
-    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy / 10 : 0;
 
     return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
 }
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
-    CAmount ret = blockValue/5; // start at 20%
+    CAmount ret = blockValue / 2; // Masternode payments for Kyanite will be 45% (50% of 90%) of the block reward.
 
-    int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock;
-    int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod;
+    // int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock;
+    // int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod;
 
+/* DASH schedule
                                                                       // mainnet:
     if(nHeight > nMNPIBlock)                  ret += blockValue / 20; // 158000 - 25.0% - 2014-10-24
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 1)) ret += blockValue / 20; // 175280 - 30.0% - 2014-11-25
@@ -1075,9 +1141,9 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 5)) ret += blockValue / 40; // 244400 - 42.5% - 2015-03-30
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 6)) ret += blockValue / 40; // 261680 - 45.0% - 2015-05-01
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 7)) ret += blockValue / 40; // 278960 - 47.5% - 2015-06-01
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 9)) ret += blockValue / 40; // 313520 - 50.0% - 2015-08-03
+*/
 
-    return ret;
+   return ret;
 }
 
 bool IsInitialBlockDownload()
@@ -1698,7 +1764,7 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck() {
-    RenameThread("dash-scriptch");
+    RenameThread("kyan-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -1804,7 +1870,7 @@ static int64_t nTimeSubsidy = 0;
 static int64_t nTimeValueValid = 0;
 static int64_t nTimePayeeValid = 0;
 static int64_t nTimeProcessSpecial = 0;
-static int64_t nTimeDashSpecific = 0;
+static int64_t nTimeKyanSpecific = 0;
 static int64_t nTimeConnect = 0;
 static int64_t nTimeIndex = 0;
 static int64_t nTimeCallbacks = 0;
@@ -1919,7 +1985,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
         }
     }
 
-    /// DASH: Check superblock start
+    /// KYAN: Check superblock start
 
     // make sure old budget is the real one
     if (pindex->nHeight == chainparams.GetConsensus().nSuperblockStartBlock &&
@@ -1928,7 +1994,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
             return state.DoS(100, error("ConnectBlock(): invalid superblock start"),
                              REJECT_INVALID, "bad-sb-start");
 
-    /// END DASH
+    /// END KYAN
 
     // Start enforcing BIP68 (sequence locks) and BIP112 (CHECKSEQUENCEVERIFY) using versionbits logic.
     int nLockTimeFlags = 0;
@@ -2108,7 +2174,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     LogPrint(BCLog::BENCHMARK, "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n", nInputs - 1, 0.001 * (nTime4 - nTime2), nInputs <= 1 ? 0 : 0.001 * (nTime4 - nTime2) / (nInputs-1), nTimeVerify * 0.000001);
 
 
-    // DASH
+    // KYAN
 
     // It's possible that we simply don't have enough data and this could fail
     // (i.e. block itself could be a correct one and we need to store it),
@@ -2116,7 +2182,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     // the peer who sent us this block is missing some data and wasn't able
     // to recognize that block is actually invalid.
 
-    // DASH : CHECK TRANSACTIONS FOR INSTANTSEND
+    // KYAN : CHECK TRANSACTIONS FOR INSTANTSEND
 
     if (sporkManager.IsSporkActive(SPORK_3_INSTANTSEND_BLOCK_FILTERING)) {
         // Require other nodes to comply, send them some data in case they are missing it.
@@ -2134,18 +2200,18 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                 // The node which relayed this should switch to correct chain.
                 // TODO: relay instantsend data/proof.
                 LOCK(cs_main);
-                return state.DoS(10, error("ConnectBlock(DASH): transaction %s conflicts with transaction lock %s", tx->GetHash().ToString(), conflictLock->txid.ToString()),
+                return state.DoS(10, error("ConnectBlock(KYAN): transaction %s conflicts with transaction lock %s", tx->GetHash().ToString(), conflictLock->txid.ToString()),
                                  REJECT_INVALID, "conflict-tx-lock");
             }
         }
     } else {
-        LogPrintf("ConnectBlock(DASH): spork is off, skipping transaction locking checks\n");
+        LogPrintf("ConnectBlock(KYAN): spork is off, skipping transaction locking checks\n");
     }
 
     int64_t nTime5_1 = GetTimeMicros(); nTimeISFilter += nTime5_1 - nTime4;
     LogPrint(BCLog::BENCHMARK, "      - IS filter: %.2fms [%.2fs]\n", 0.001 * (nTime5_1 - nTime4), nTimeISFilter * 0.000001);
 
-    // DASH : MODIFIED TO CHECK MASTERNODE PAYMENTS AND SUPERBLOCKS
+    // KYAN : MODIFIED TO CHECK MASTERNODE PAYMENTS AND SUPERBLOCKS
 
     // TODO: resync data (both ways?) and try to reprocess this block later.
     CAmount blockReward = nFees + GetBlockSubsidy(pindex->pprev->nBits, pindex->pprev->nHeight, chainparams.GetConsensus());
@@ -2155,14 +2221,14 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     LogPrint(BCLog::BENCHMARK, "      - GetBlockSubsidy: %.2fms [%.2fs]\n", 0.001 * (nTime5_2 - nTime5_1), nTimeSubsidy * 0.000001);
 
     if (!IsBlockValueValid(block, pindex->nHeight, blockReward, strError)) {
-        return state.DoS(0, error("ConnectBlock(DASH): %s", strError), REJECT_INVALID, "bad-cb-amount");
+        return state.DoS(0, error("ConnectBlock(KYAN): %s", strError), REJECT_INVALID, "bad-cb-amount");
     }
 
     int64_t nTime5_3 = GetTimeMicros(); nTimeValueValid += nTime5_3 - nTime5_2;
     LogPrint(BCLog::BENCHMARK, "      - IsBlockValueValid: %.2fms [%.2fs]\n", 0.001 * (nTime5_3 - nTime5_2), nTimeValueValid * 0.000001);
 
     if (!IsBlockPayeeValid(*block.vtx[0], pindex->nHeight, blockReward)) {
-        return state.DoS(0, error("ConnectBlock(DASH): couldn't find masternode or superblock payments"),
+        return state.DoS(0, error("ConnectBlock(KYAN): couldn't find masternode or superblock payments"),
                                 REJECT_INVALID, "bad-cb-payee");
     }
 
@@ -2170,17 +2236,17 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     LogPrint(BCLog::BENCHMARK, "      - IsBlockPayeeValid: %.2fms [%.2fs]\n", 0.001 * (nTime5_4 - nTime5_3), nTimePayeeValid * 0.000001);
 
     if (!ProcessSpecialTxsInBlock(block, pindex, state, fJustCheck, fScriptChecks)) {
-        return error("ConnectBlock(DASH): ProcessSpecialTxsInBlock for block %s failed with %s",
+        return error("ConnectBlock(KYAN): ProcessSpecialTxsInBlock for block %s failed with %s",
                      pindex->GetBlockHash().ToString(), FormatStateMessage(state));
     }
 
     int64_t nTime5_5 = GetTimeMicros(); nTimeProcessSpecial += nTime5_5 - nTime5_4;
     LogPrint(BCLog::BENCHMARK, "      - ProcessSpecialTxsInBlock: %.2fms [%.2fs]\n", 0.001 * (nTime5_5 - nTime5_4), nTimeProcessSpecial * 0.000001);
 
-    int64_t nTime5 = GetTimeMicros(); nTimeDashSpecific += nTime5 - nTime4;
-    LogPrint(BCLog::BENCHMARK, "    - Dash specific: %.2fms [%.2fs]\n", 0.001 * (nTime5 - nTime4), nTimeDashSpecific * 0.000001);
+    int64_t nTime5 = GetTimeMicros(); nTimeKyanSpecific += nTime5 - nTime4;
+    LogPrint(BCLog::BENCHMARK, "    - Kyan specific: %.2fms [%.2fs]\n", 0.001 * (nTime5 - nTime4), nTimeKyanSpecific * 0.000001);
 
-    // END DASH
+    // END KYAN
 
     if (fJustCheck)
         return true;
