@@ -1,0 +1,1 @@
+Block 7268: Thu Sep 24 01:27:01 UTC 2020 [zip](https://github.com/kyancoin/KYAN/releases/download/v0.15.0.0.k/bootstrap.zip) (7.61M) [SHA256](https://raw.githubusercontent.com/kyancoin/KYAN/master/bootstrap/sha256.txt)
