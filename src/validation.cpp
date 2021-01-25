@@ -1073,8 +1073,7 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
     if (nHeight < nMNPIBlock + (nMNPIPeriod * 4)) 
 		return blockValue * (82 / 100); // Block: 86048 - Masternode share percent: 82.0% - Approximate date and time: 2021-02-12 19:30 UTC
 
-    if (nHeight < nMNPIBlock + (nMNPIPeriod * 5)) 
-		return blockValue * (90 / 100); // Block: 88066 - Masternode share percent: 90.0% - Approximate date and time: 2021-02-16 7:30	 UTC
+	return blockValue * (90 / 100); // Block: 88066 - Masternode share percent: 90.0% - Approximate date and time: 2021-02-16 7:30	 UTC
 }
 
 bool IsInitialBlockDownload()
