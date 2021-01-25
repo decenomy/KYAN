@@ -1014,38 +1014,7 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     double dDiff;
     CAmount nSubsidyBase;
 
-/* This bug is irrelevant with Kyanite coin so commenting this out for now. It should be removed.
- ************************************************************************************************
-    if (nPrevHeight <= 4500 && Params().NetworkIDString() == CBaseChainParams::MAIN) {
-        // a bug which caused diff to not be correctly calculated
-        dDiff = (double)0x0000ffff / (double)(nPrevBits & 0x00ffffff);
-    } else {
-        dDiff = ConvertBitsToDouble(nPrevBits);
-    }
-*/
 	dDiff = ConvertBitsToDouble(nPrevBits);
-
-/*
-    if (nPrevHeight < 5465) {
-        // Early ages...
-        // 1111/((x+1)^2)
-        nSubsidyBase = (1111.0 / (pow((dDiff+1.0),2.0)));
-        if(nSubsidyBase > 500) nSubsidyBase = 500;
-        else if(nSubsidyBase < 1) nSubsidyBase = 1;
-    } else if (nPrevHeight < 17000 || (dDiff <= 75 && nPrevHeight < 24000)) {
-        // CPU mining era
-        // 11111/(((x+51)/6)^2)
-        nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
-        if(nSubsidyBase > 500) nSubsidyBase = 500;
-        else if(nSubsidyBase < 25) nSubsidyBase = 25;
-    } else {
-        // GPU/ASIC mining era
-        // 2222222/(((x+2600)/9)^2)
-        nSubsidyBase = (2222222.0 / (pow((dDiff+2600.0)/9.0,2.0)));
-        if(nSubsidyBase > 25) nSubsidyBase = 25;
-        else if(nSubsidyBase < 5) nSubsidyBase = 5;
-    }
-*/
 
 /* The block reward schedule is a migration from SAPP reward schedule. */
     if (nPrevHeight < 18)
@@ -1092,11 +1061,11 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
     int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod; // 2016 blocks - 3.5 days
 	int rewardIncreasePercent = 8 / 100;
 
-	if (nHeight > nMNPIBlock + (nMNPIPeriod * 0)) ret += blockValue * 1 * rewardIncreasePercent; // Block > 80000 - Masternode share percent: 58.0% - Approximate date and time: 2021-02-02 7:30  UTC 
-    if (nHeight > nMNPIBlock + (nMNPIPeriod * 1)) ret += blockValue * 2 * rewardIncreasePercent; // Block > 82016 - Masternode share percent: 66.0% - Approximate date and time: 2021-02-05 19:30 UTC
-    if (nHeight > nMNPIBlock + (nMNPIPeriod * 2)) ret += blockValue * 3 * rewardIncreasePercent; // Block > 84032 - Masternode share percent: 74.0% - Approximate date and time: 2021-02-09 7:30  UTC
-    if (nHeight > nMNPIBlock + (nMNPIPeriod * 3)) ret += blockValue * 4 * rewardIncreasePercent; // Block > 86048 - Masternode share percent: 82.0% - Approximate date and time: 2021-02-12 19:30 UTC
-    if (nHeight > nMNPIBlock + (nMNPIPeriod * 4)) ret += blockValue * 5 * rewardIncreasePercent; // Block > 88066 - Masternode share percent: 90.0% - Approximate date and time: 2021-02-16 7:30	 UTC
+	if (nHeight > nMNPIBlock + (nMNPIPeriod * 0)) ret += blockValue * rewardIncreasePercent; // Block > 80000 - Masternode share percent: 58.0% - Approximate date and time: 2021-02-02 7:30  UTC 
+    if (nHeight > nMNPIBlock + (nMNPIPeriod * 1)) ret += blockValue * rewardIncreasePercent; // Block > 82016 - Masternode share percent: 66.0% - Approximate date and time: 2021-02-05 19:30 UTC
+    if (nHeight > nMNPIBlock + (nMNPIPeriod * 2)) ret += blockValue * rewardIncreasePercent; // Block > 84032 - Masternode share percent: 74.0% - Approximate date and time: 2021-02-09 7:30  UTC
+    if (nHeight > nMNPIBlock + (nMNPIPeriod * 3)) ret += blockValue * rewardIncreasePercent; // Block > 86048 - Masternode share percent: 82.0% - Approximate date and time: 2021-02-12 19:30 UTC
+    if (nHeight > nMNPIBlock + (nMNPIPeriod * 4)) ret += blockValue * rewardIncreasePercent; // Block > 88066 - Masternode share percent: 90.0% - Approximate date and time: 2021-02-16 7:30	 UTC
 
    return ret;
 }
