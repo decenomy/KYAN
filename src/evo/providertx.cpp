@@ -30,10 +30,10 @@ static bool CheckService(const uint256& proTxHash, const ProTx& proTx, CValidati
     static int mainnetDefaultPort = CreateChainParams(CBaseChainParams::MAIN)->GetDefaultPort();
     if (Params().NetworkIDString() == CBaseChainParams::MAIN) {
         if (proTx.addr.GetPort() != mainnetDefaultPort) {
-            return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
+            // return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
         }
     } else if (proTx.addr.GetPort() == mainnetDefaultPort) {
-        return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
+        // return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
     }
 
     if (!proTx.addr.IsIPv4()) {
