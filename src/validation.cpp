@@ -1048,100 +1048,55 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 */
 
 /* The block reward schedule is a migration from SAPP reward schedule. */
-    if (nPrevHeight < 18) {
+    if (nPrevHeight < 18)
+	{
         return 20000000 * COIN; // premine from SAPP (360M, burn the rest)
-    } else if (nPrevHeight < 20000) {
+    }
+	else if (nPrevHeight < 20000)
+	{
         nSubsidyBase = 2250;
-    } else if (nPrevHeight < 40000) {
+    }
+	else if (nPrevHeight < 40000)
+	{
         nSubsidyBase = 2000;
-    } else if (nPrevHeight < 60000) {
+    }
+	else if (nPrevHeight < 60000)
+	{
         nSubsidyBase = 1750;
-    } else if (nPrevHeight < 80000) {
+    }
+	else if (nPrevHeight < 80000)
+	{
         nSubsidyBase = 1500;
-    } else if (nPrevHeight < 100000) {
+    }
+	else if (nPrevHeight < 100000)
+	{
         nSubsidyBase = 1250;
-    } else if (nPrevHeight < 120000) {
+    }
+	else if (nPrevHeight < 120000)
+	{
         nSubsidyBase = 1125;
-    } else {
+    }
+	else
+	{
         nSubsidyBase = 1000;
     }
 
-    // if (nPrevHeight < 18) {
-    //     return 20000000 * COIN; // premine from SAPP (360M, burn the rest)
-    // } else if (nPrevHeight < 50001) {
-    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
-    //     if(nSubsidyBase > 500) nSubsidyBase = 500;
-    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
-    // } else if (nPrevHeight < 100001) {
-    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
-    //     if(nSubsidyBase > 450) nSubsidyBase = 450;
-    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
-    // } else if (nPrevHeight < 150001) {
-    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
-    //     if(nSubsidyBase > 400) nSubsidyBase = 400;
-    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
-    // } else if (nPrevHeight < 200001) {
-    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
-    //     if(nSubsidyBase > 350) nSubsidyBase = 350;
-    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
-    // } else if (nPrevHeight < 250001) {
-    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
-    //     if(nSubsidyBase > 300) nSubsidyBase = 300;
-    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
-    // } else if (nPrevHeight < 300001) {
-    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
-    //     if(nSubsidyBase > 250) nSubsidyBase = 250;
-    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
-    // } else if (nPrevHeight < 350001) {
-    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
-    //     if(nSubsidyBase > 225) nSubsidyBase = 225;
-    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
-    // } else {
-    //     nSubsidyBase = (11111.0 / (pow((dDiff+51.0)/6.0,2.0)));
-    //     if(nSubsidyBase > 200) nSubsidyBase = 200;
-    //     else if(nSubsidyBase < 25) nSubsidyBase = 25;
-    // }
-
-
-    CAmount nSubsidy = nSubsidyBase * COIN;
-
-/* We do not use consensusParams.nSubsidyHalvingInterval for Kyanite coin but instead we use the reward schedule given above.
- ****************************************************************************************************************************
-    // yearly decline of production by ~7.1% per year, projected ~18M coins max by year 2050+.
-    for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
-        nSubsidy -= nSubsidy/14;
-    }
-*/
-
-    // this is only active on devnets
-    if (nPrevHeight < consensusParams.nHighSubsidyBlocks) {
-        nSubsidy *= consensusParams.nHighSubsidyFactor;
-    }
-
-    // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
-    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy / 10 : 0;
-
-    return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
+	return (nSubsidyBase * COIN) / (fSuperblockPartOnly ? 10 : 1);
 }
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
-    CAmount ret = blockValue / 2; // Masternode payments for Kyanite will be 45% (50% of 90%) of the block reward.
+    CAmount ret = blockValue / 2; // Until block 80000 reached, masternode payments for Kyanite will be 50% of the block reward.
 
-    // int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock;
-    // int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod;
+    int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock; // Block 80000 - Approximately 2021-02-02 7:30  UTC
+    int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod; // 2016 blocks - 3.5 days
+	int rewardIncreasePercent = 8 / 100;
 
-/* DASH schedule
-                                                                      // mainnet:
-    if(nHeight > nMNPIBlock)                  ret += blockValue / 20; // 158000 - 25.0% - 2014-10-24
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 1)) ret += blockValue / 20; // 175280 - 30.0% - 2014-11-25
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 2)) ret += blockValue / 20; // 192560 - 35.0% - 2014-12-26
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 3)) ret += blockValue / 40; // 209840 - 37.5% - 2015-01-26
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 4)) ret += blockValue / 40; // 227120 - 40.0% - 2015-02-27
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 5)) ret += blockValue / 40; // 244400 - 42.5% - 2015-03-30
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 6)) ret += blockValue / 40; // 261680 - 45.0% - 2015-05-01
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 7)) ret += blockValue / 40; // 278960 - 47.5% - 2015-06-01
-*/
+	if (nHeight > nMNPIBlock + (nMNPIPeriod * 0)) ret += blockValue * 1 * rewardIncreasePercent; // Block > 80000 - Masternode share percent: 58.0% - Approximate date and time: 2021-02-02 7:30  UTC 
+    if (nHeight > nMNPIBlock + (nMNPIPeriod * 1)) ret += blockValue * 2 * rewardIncreasePercent; // Block > 82016 - Masternode share percent: 66.0% - Approximate date and time: 2021-02-05 19:30 UTC
+    if (nHeight > nMNPIBlock + (nMNPIPeriod * 2)) ret += blockValue * 3 * rewardIncreasePercent; // Block > 84032 - Masternode share percent: 74.0% - Approximate date and time: 2021-02-09 7:30  UTC
+    if (nHeight > nMNPIBlock + (nMNPIPeriod * 3)) ret += blockValue * 4 * rewardIncreasePercent; // Block > 86048 - Masternode share percent: 82.0% - Approximate date and time: 2021-02-12 19:30 UTC
+    if (nHeight > nMNPIBlock + (nMNPIPeriod * 4)) ret += blockValue * 5 * rewardIncreasePercent; // Block > 88066 - Masternode share percent: 90.0% - Approximate date and time: 2021-02-16 7:30	 UTC
 
    return ret;
 }
