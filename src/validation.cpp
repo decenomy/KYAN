@@ -1055,19 +1055,26 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
-    CAmount ret = blockValue / 2; // Until block 80000 reached, masternode payments for Kyanite will be 50% of the block reward.
-
     int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock; // Block 80000 - Approximately 2021-02-02 7:30  UTC
     int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod; // 2016 blocks - 3.5 days
-	int rewardIncreasePercent = 8 / 100;
 
-	if (nHeight > nMNPIBlock + (nMNPIPeriod * 0)) ret += blockValue * rewardIncreasePercent; // Block > 80000 - Masternode share percent: 58.0% - Approximate date and time: 2021-02-02 7:30  UTC 
-    if (nHeight > nMNPIBlock + (nMNPIPeriod * 1)) ret += blockValue * rewardIncreasePercent; // Block > 82016 - Masternode share percent: 66.0% - Approximate date and time: 2021-02-05 19:30 UTC
-    if (nHeight > nMNPIBlock + (nMNPIPeriod * 2)) ret += blockValue * rewardIncreasePercent; // Block > 84032 - Masternode share percent: 74.0% - Approximate date and time: 2021-02-09 7:30  UTC
-    if (nHeight > nMNPIBlock + (nMNPIPeriod * 3)) ret += blockValue * rewardIncreasePercent; // Block > 86048 - Masternode share percent: 82.0% - Approximate date and time: 2021-02-12 19:30 UTC
-    if (nHeight > nMNPIBlock + (nMNPIPeriod * 4)) ret += blockValue * rewardIncreasePercent; // Block > 88066 - Masternode share percent: 90.0% - Approximate date and time: 2021-02-16 7:30	 UTC
+	if (nHeight < nMNPIBlock)
+		return blockValue * (50 / 100); // Until block 80000 reached, masternode payments for Kyanite will be 50% of the block reward.
 
-   return ret;
+	if (nHeight < nMNPIBlock + (nMNPIPeriod * 1)) 
+		return blockValue * (58 / 100); // Block > 80000 - Masternode share percent: 58.0% - Approximate date and time: 2021-02-02 7:30  UTC 
+
+    if (nHeight < nMNPIBlock + (nMNPIPeriod * 2)) 
+		return blockValue * (66 / 100); // Block > 82016 - Masternode share percent: 66.0% - Approximate date and time: 2021-02-05 19:30 UTC
+
+    if (nHeight < nMNPIBlock + (nMNPIPeriod * 3)) 
+		return blockValue * (74 / 100); // Block > 84032 - Masternode share percent: 74.0% - Approximate date and time: 2021-02-09 7:30  UTC
+
+    if (nHeight < nMNPIBlock + (nMNPIPeriod * 4)) 
+		return blockValue * (82 / 100); // Block > 86048 - Masternode share percent: 82.0% - Approximate date and time: 2021-02-12 19:30 UTC
+
+    if (nHeight < nMNPIBlock + (nMNPIPeriod * 5)) 
+		return blockValue * (90 / 100); // Block > 88066 - Masternode share percent: 90.0% - Approximate date and time: 2021-02-16 7:30	 UTC
 }
 
 bool IsInitialBlockDownload()
