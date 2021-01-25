@@ -35,6 +35,10 @@
 #include <QSet>
 #include <QTimer>
 
+// Fixing Boost 1.73 compile errors
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+
 
 WalletModel::WalletModel(const PlatformStyle *platformStyle, CWallet *_wallet, OptionsModel *_optionsModel, QObject *parent) :
     QObject(parent), wallet(_wallet), optionsModel(_optionsModel), addressTableModel(0),

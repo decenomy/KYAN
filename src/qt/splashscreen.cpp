@@ -26,6 +26,10 @@
 #include <QDesktopWidget>
 #include <QPainter>
 
+// Fixing Boost 1.73 compile errors
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+
 SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) :
     QWidget(0, f), curAlignment(0)
 {
