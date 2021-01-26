@@ -467,7 +467,8 @@ UniValue protx_register(const JSONRPCRequest& request)
     //     }
     // }
     if (request.params[paramIdx].get_str() != "") {
-        if (!Lookup(request.params[paramIdx].get_str().c_str(), ptx.addr, GetPort(), false)) {
+		CService service;
+        if (!Lookup(request.params[paramIdx].get_str().c_str(), ptx.addr, service.GetPort(), false)) {
             throw std::runtime_error(strprintf("invalid network address %s", request.params[paramIdx].get_str()));
         }
     }
@@ -634,7 +635,8 @@ UniValue protx_update_service(const JSONRPCRequest& request)
     // if (!Lookup(request.params[2].get_str().c_str(), ptx.addr, Params().GetDefaultPort(), false)) {
     //     throw std::runtime_error(strprintf("invalid network address %s", request.params[2].get_str()));
     // }
-    if (!Lookup(request.params[2].get_str().c_str(), ptx.addr, GetPort(), false)) {
+	CService service;
+    if (!Lookup(request.params[2].get_str().c_str(), ptx.addr, service.GetPort(), false)) {
         throw std::runtime_error(strprintf("invalid network address %s", request.params[2].get_str()));
     }
 
