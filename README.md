@@ -1,4 +1,4 @@
-Kyan Core staging tree 0.15
+Kyan Core staging tree 0.15.1
 ===========================
 
 https://www.kyancoin.net
