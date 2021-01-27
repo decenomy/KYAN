@@ -461,8 +461,14 @@ UniValue protx_register(const JSONRPCRequest& request)
         pwallet->LockCoin(ptx.collateralOutpoint);
     }
 
+    // if (request.params[paramIdx].get_str() != "") {
+    //     if (!Lookup(request.params[paramIdx].get_str().c_str(), ptx.addr, Params().GetDefaultPort(), false)) {
+    //         throw std::runtime_error(strprintf("invalid network address %s", request.params[paramIdx].get_str()));
+    //     }
+    // }
     if (request.params[paramIdx].get_str() != "") {
-        if (!Lookup(request.params[paramIdx].get_str().c_str(), ptx.addr, Params().GetDefaultPort(), false)) {
+		CService service;
+        if (!Lookup(request.params[paramIdx].get_str().c_str(), ptx.addr, service.GetPort(), false)) {
             throw std::runtime_error(strprintf("invalid network address %s", request.params[paramIdx].get_str()));
         }
     }
@@ -626,7 +632,11 @@ UniValue protx_update_service(const JSONRPCRequest& request)
     ptx.nVersion = CProRegTx::CURRENT_VERSION;
     ptx.proTxHash = ParseHashV(request.params[1], "proTxHash");
 
-    if (!Lookup(request.params[2].get_str().c_str(), ptx.addr, Params().GetDefaultPort(), false)) {
+    // if (!Lookup(request.params[2].get_str().c_str(), ptx.addr, Params().GetDefaultPort(), false)) {
+    //     throw std::runtime_error(strprintf("invalid network address %s", request.params[2].get_str()));
+    // }
+	CService service;
+    if (!Lookup(request.params[2].get_str().c_str(), ptx.addr, service.GetPort(), false)) {
         throw std::runtime_error(strprintf("invalid network address %s", request.params[2].get_str()));
     }
 
