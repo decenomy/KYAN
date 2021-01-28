@@ -8,7 +8,7 @@ fi
 
 # Upgrade the system and install required dependencies
 	sudo apt update
-	sudo apt install git zip unzip build-essential libtool bsdmainutils autotools-dev autoconf pkg-config automake python3 -y
+	sudo apt install git zip unzip build-essential libtool bsdmainutils autotools-dev autoconf pkg-config automake python3 cmake -y
 
 # Clone KYAN code from KYAN official Github repository
 	git clone https://github.com/kyancoin/KYAN
@@ -17,6 +17,7 @@ fi
 	cd KYAN
 
 # Compile dependencies
+	./contrib/install_db4.sh `pwd`
 	cd depends
 	make -j$(echo $CPU_CORES) HOST=x86_64-pc-linux-gnu 
 	cd ..
