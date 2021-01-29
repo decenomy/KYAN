@@ -461,8 +461,8 @@ public:
         strNetworkID = "test";
         //consensus.nSubsidyHalvingInterval = 210240;
         consensus.nMasternodePaymentsStartBlock = 1; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
-        consensus.nMasternodePaymentsIncreaseBlock = 2;
-        consensus.nMasternodePaymentsIncreasePeriod = 10;
+        consensus.nMasternodePaymentsIncreaseBlock = 1540;
+        consensus.nMasternodePaymentsIncreasePeriod = 4;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 1;
