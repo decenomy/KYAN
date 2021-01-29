@@ -400,6 +400,7 @@ CNode* CConnman::ConnectNode(CAddress addrConnect, const char *pszDest, bool fCo
     // Connect
     SOCKET hSocket;
     bool proxyConnectionFailed = false;
+    // if (pszDest ? ConnectSocketByName(addrConnect, hSocket, pszDest, addrConnect.GetPort() /* Params().GetDefaultPort() */, nConnectTimeout, &proxyConnectionFailed) :
     if (pszDest ? ConnectSocketByName(addrConnect, hSocket, pszDest, Params().GetDefaultPort(), nConnectTimeout, &proxyConnectionFailed) :
                   ConnectSocket(addrConnect, hSocket, nConnectTimeout, &proxyConnectionFailed))
     {
