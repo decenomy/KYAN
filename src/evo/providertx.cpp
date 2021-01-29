@@ -16,6 +16,7 @@
 #include "streams.h"
 #include "univalue.h"
 #include "validation.h"
+#include "spork.h"
 
 template <typename ProTx>
 static bool CheckService(const uint256& proTxHash, const ProTx& proTx, CValidationState& state)
@@ -27,20 +28,28 @@ static bool CheckService(const uint256& proTxHash, const ProTx& proTx, CValidati
         return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr");
     }
 
-/*
-    static int mainnetDefaultPort = CreateChainParams(CBaseChainParams::MAIN)->GetDefaultPort();
-    if (Params().NetworkIDString() == CBaseChainParams::MAIN) {
-        if (proTx.addr.GetPort() != mainnetDefaultPort) {
-            return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
-        }
-    } else if (proTx.addr.GetPort() == mainnetDefaultPort) {
-        return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
-    }
-*/
 
-    if (!proTx.addr.IsIPv4()) {
-        return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr");
-    }
+	if (!sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED)) {
+		static int mainnetDefaultPort = CreateChainParams(CBaseChainParams::MAIN)->GetDefaultPort();
+		if (Params().NetworkIDString() == CBaseChainParams::MAIN) {
+			if (proTx.addr.GetPort() != mainnetDefaultPort) {
+				return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
+			}
+		} else if (proTx.addr.GetPort() == mainnetDefaultPort) {
+			return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
+		}
+	}
+
+	if (!sporkManager.IsSporkActive(SPORK_11_IPv6_ENABLED)) {
+		if (!proTx.addr.IsIPv4()) {
+			return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr");
+		}
+	}
+	else {
+		if (!proTx.addr.IsIPv6()) { // Only IPv6 should be allowed and not the Tor and/or other address formats be allowed
+			return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr");
+		}
+	}
 
     return true;
 }
