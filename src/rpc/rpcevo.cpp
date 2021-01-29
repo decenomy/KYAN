@@ -25,6 +25,7 @@
 #include "evo/simplifiedmns.h"
 
 #include "bls/bls.h"
+#include "spork.h"
 
 #ifdef ENABLE_WALLET
 extern UniValue signrawtransaction(const JSONRPCRequest& request);
@@ -461,17 +462,21 @@ UniValue protx_register(const JSONRPCRequest& request)
         pwallet->LockCoin(ptx.collateralOutpoint);
     }
 
-    // if (request.params[paramIdx].get_str() != "") {
-    //     if (!Lookup(request.params[paramIdx].get_str().c_str(), ptx.addr, Params().GetDefaultPort(), false)) {
-    //         throw std::runtime_error(strprintf("invalid network address %s", request.params[paramIdx].get_str()));
-    //     }
-    // }
-    if (request.params[paramIdx].get_str() != "") {
-		CService service;
-        if (!Lookup(request.params[paramIdx].get_str().c_str(), ptx.addr, service.GetPort(), false)) {
-            throw std::runtime_error(strprintf("invalid network address %s", request.params[paramIdx].get_str()));
-        }
-    }
+	if (!sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED)) {
+		if (request.params[paramIdx].get_str() != "") {
+		    if (!Lookup(request.params[paramIdx].get_str().c_str(), ptx.addr, Params().GetDefaultPort(), false)) {
+		        throw std::runtime_error(strprintf("invalid network address %s", request.params[paramIdx].get_str()));
+		    }
+		}
+	}
+	else {
+		if (request.params[paramIdx].get_str() != "") {
+			CService service;
+			if (!Lookup(request.params[paramIdx].get_str().c_str(), ptx.addr, service.GetPort(), false)) {
+				throw std::runtime_error(strprintf("invalid network address %s", request.params[paramIdx].get_str()));
+			}
+		}
+	}
 
     CKey keyOwner = ParsePrivKey(pwallet, request.params[paramIdx + 1].get_str(), true);
     CBLSPublicKey pubKeyOperator = ParseBLSPubKey(request.params[paramIdx + 2].get_str(), "operator BLS address");
@@ -632,13 +637,17 @@ UniValue protx_update_service(const JSONRPCRequest& request)
     ptx.nVersion = CProRegTx::CURRENT_VERSION;
     ptx.proTxHash = ParseHashV(request.params[1], "proTxHash");
 
-    // if (!Lookup(request.params[2].get_str().c_str(), ptx.addr, Params().GetDefaultPort(), false)) {
-    //     throw std::runtime_error(strprintf("invalid network address %s", request.params[2].get_str()));
-    // }
-	CService service;
-    if (!Lookup(request.params[2].get_str().c_str(), ptx.addr, service.GetPort(), false)) {
-        throw std::runtime_error(strprintf("invalid network address %s", request.params[2].get_str()));
-    }
+	if (!sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED)) {
+		if (!Lookup(request.params[2].get_str().c_str(), ptx.addr, Params().GetDefaultPort(), false)) {
+		    throw std::runtime_error(strprintf("invalid network address %s", request.params[2].get_str()));
+		}
+	}
+	else {
+		CService service;
+		if (!Lookup(request.params[2].get_str().c_str(), ptx.addr, service.GetPort(), false)) {
+			throw std::runtime_error(strprintf("invalid network address %s", request.params[2].get_str()));
+		}
+	}
 
     CBLSSecretKey keyOperator = ParseBLSSecretKey(request.params[3].get_str(), "operatorKey");
 
