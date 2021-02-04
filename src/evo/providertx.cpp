@@ -31,11 +31,18 @@ static bool CheckService(const uint256& proTxHash, const ProTx& proTx, CValidati
 
 	if (!sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED)) {
 		static int mainnetDefaultPort = CreateChainParams(CBaseChainParams::MAIN)->GetDefaultPort();
+		static int testnetDefaultPort = CreateChainParams(CBaseChainParams::TESTNET)->GetDefaultPort();
 		if (Params().NetworkIDString() == CBaseChainParams::MAIN) {
 			if (proTx.addr.GetPort() != mainnetDefaultPort) {
 				return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
 			}
-		} else if (proTx.addr.GetPort() == mainnetDefaultPort) {
+		}
+		else if ((Params().NetworkIDString() == CBaseChainParams::TESTNET)) {
+			if (proTx.addr.GetPort() != testnetDefaultPort) {
+				return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
+			}
+		}
+		else if ((proTx.addr.GetPort() == mainnetDefaultPort) || (proTx.addr.GetPort() == testnetDefaultPort)) {
 			return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr-port");
 		}
 	}
