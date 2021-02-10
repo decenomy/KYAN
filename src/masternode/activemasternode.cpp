@@ -109,9 +109,9 @@ void CActiveMasternodeManager::Init()
     }
 
 	// Check SPORK_10_MULTIPORT_ENABLED and if it's false drop the masternodes that are running on non-default port.
-    if ((!sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED)) && (activeMasternodeInfo.service.GetPort() != Params().GetDefaultPort())) {
+    if (Params().NetworkIDString() != CBaseChainParams::REGTEST && Params().NetworkIDString() != CBaseChainParams::DEVNET && !sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED) && (activeMasternodeInfo.service.GetPort() != Params().GetDefaultPort())) {
         state = MASTERNODE_ERROR;
-        strError = "Multiport is not allowed by spork. Masternode setup on non-default port will NOT be active anymore.";
+        strError = "Multiport is forbid by spork. Masternode setup on non-default port will NOT be active anymore.";
         LogPrintf("CActiveDeterministicMasternodeManager::Init -- ERROR: %s\n", strError);
         return;
     }
