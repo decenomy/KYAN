@@ -426,7 +426,7 @@ public:
         fRequireRoutableExternalIP = true;
         fMineBlocksOnDemand = false;
         fAllowMultipleAddressesFromGroup = false;
-        fAllowMultiplePorts = true;
+        fAllowMultiplePorts = false;
 
         nPoolMinParticipants = 3;
         nPoolMaxParticipants = 5;

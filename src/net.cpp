@@ -28,6 +28,7 @@
 #include "masternode/masternode-sync.h"
 #include "privatesend/privatesend.h"
 #include "evo/deterministicmns.h"
+#include "spork.h"
 
 #ifdef WIN32
 #include <string.h>
@@ -400,7 +401,7 @@ CNode* CConnman::ConnectNode(CAddress addrConnect, const char *pszDest, bool fCo
     // Connect
     SOCKET hSocket;
     bool proxyConnectionFailed = false;
-    if (pszDest ? ConnectSocketByName(addrConnect, hSocket, pszDest, addrConnect.GetPort() /* Params().GetDefaultPort() */, nConnectTimeout, &proxyConnectionFailed) :
+    if (pszDest ? ConnectSocketByName(addrConnect, hSocket, pszDest, !sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED) ? addrConnect.GetPort() : Params().GetDefaultPort() , nConnectTimeout, &proxyConnectionFailed) :
                   ConnectSocket(addrConnect, hSocket, nConnectTimeout, &proxyConnectionFailed))
     {
         if (!IsSelectableSocket(hSocket)) {
@@ -1968,9 +1969,12 @@ void CConnman::ThreadOpenConnections()
                 continue;
             }
 
-            // do not allow non-default ports, unless after 50 invalid addresses selected already
-            if ((!isMasternode || !Params().AllowMultiplePorts()) && addr.GetPort() != Params().GetDefaultPort() && addr.GetPort() != GetListenPort() && nTries < 50)
-                continue;
+			CSporkManager sporkManager;
+			if (!sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED)) {
+				// do not allow non-default ports, unless after 50 invalid addresses selected already
+				if ((!isMasternode || !Params().AllowMultiplePorts()) && addr.GetPort() != Params().GetDefaultPort() && addr.GetPort() != GetListenPort() && nTries < 50)
+					continue;
+			}
 
             addrConnect = addr;
             break;
