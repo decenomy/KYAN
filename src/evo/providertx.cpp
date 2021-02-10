@@ -28,7 +28,6 @@ static bool CheckService(const uint256& proTxHash, const ProTx& proTx, CValidati
         return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr");
     }
 
-
 	if (!sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED)) {
 		static int mainnetDefaultPort = CreateChainParams(CBaseChainParams::MAIN)->GetDefaultPort();
 		static int testnetDefaultPort = CreateChainParams(CBaseChainParams::TESTNET)->GetDefaultPort();
@@ -53,7 +52,7 @@ static bool CheckService(const uint256& proTxHash, const ProTx& proTx, CValidati
 		}
 	}
 	else {
-		if (!proTx.addr.IsIPv6()) { // Only IPv6 should be allowed and not the Tor and/or other address formats be allowed
+		if (!proTx.addr.IsIPv4() && !proTx.addr.IsIPv6()) { // Only IPv6 should be allowed and not the Tor and/or other address formats be allowed
 			return state.DoS(10, false, REJECT_INVALID, "bad-protx-ipaddr");
 		}
 	}
