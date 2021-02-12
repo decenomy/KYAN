@@ -108,14 +108,14 @@ void CActiveMasternodeManager::Init()
         return;
     }
 
-	// Check SPORK_10_MULTIPORT_ENABLED and if it's false drop the masternodes that are running on non-default port.
-    if ((Params().NetworkIDString() != CBaseChainParams::REGTEST) && !sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED) && (activeMasternodeInfo.service.GetPort() != Params().GetDefaultPort())) {
-        state = MASTERNODE_POSE_BANNED;
-        // state = MASTERNODE_ERROR;
-        // strError = "Multiport is forbid by spork. Masternode setup on non-default port will NOT be active anymore.";
-        // LogPrintf("CActiveDeterministicMasternodeManager::Init -- ERROR: %s\n", strError);
-        return;
-    }
+	// // Check SPORK_10_MULTIPORT_ENABLED and if it's false drop the masternodes that are running on non-default port.
+    // if ((Params().NetworkIDString() != CBaseChainParams::REGTEST) && !sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED) && (activeMasternodeInfo.service.GetPort() != Params().GetDefaultPort())) {
+    //     state = MASTERNODE_POSE_BANNED;
+    //     // state = MASTERNODE_ERROR;
+    //     // strError = "Multiport is forbid by spork. Masternode setup on non-default port will NOT be active anymore.";
+    //     // LogPrintf("CActiveDeterministicMasternodeManager::Init -- ERROR: %s\n", strError);
+    //     return;
+    // }
 
     if (Params().NetworkIDString() != CBaseChainParams::REGTEST) {
         // Check socket connectivity
@@ -147,10 +147,10 @@ void CActiveMasternodeManager::UpdatedBlockTip(const CBlockIndex* pindexNew, con
 
 	// Check SPORK_10_MULTIPORT_ENABLED and if it's false drop the masternodes that are running on non-default port.
     if ((Params().NetworkIDString() != CBaseChainParams::REGTEST) && !sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED) && (activeMasternodeInfo.service.GetPort() != Params().GetDefaultPort())) {
-        state = MASTERNODE_POSE_BANNED;
-        // state = MASTERNODE_ERROR;
-        // strError = "Multiport is forbid by spork. Masternode setup on non-default port will NOT be active anymore.";
-        // LogPrintf("CActiveDeterministicMasternodeManager::Init -- ERROR: %s\n", strError);
+		state = MASTERNODE_REMOVED;
+		activeMasternodeInfo.proTxHash = uint256();
+		activeMasternodeInfo.outpoint.SetNull();
+		Init();
         return;
     }
 
