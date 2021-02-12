@@ -110,10 +110,10 @@ void CActiveMasternodeManager::Init()
 
 	// Check SPORK_10_MULTIPORT_ENABLED and if it's false drop the masternodes that are running on non-default port.
     if (!sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED) && ((activeMasternodeInfo.service.GetPort() != Params().GetDefaultPort()) || (dmn->pdmnState->addr.GetPort() != Params().GetDefaultPort()))) {
-		// state = MASTERNODE_REMOVED;
+		state = MASTERNODE_REMOVED;
+		mnList.RemoveMN(dmn->proTxHash);
 		activeMasternodeInfo.proTxHash = uint256();
 		activeMasternodeInfo.outpoint.SetNull();
-        state = MASTERNODE_ERROR;
         strError = "Multiport is forbid by spork. Masternode on non-default port will NOT be active anymore.";
         LogPrintf("CActiveDeterministicMasternodeManager::Init -- ERROR: %s\n", strError);
         return;
@@ -152,9 +152,10 @@ void CActiveMasternodeManager::UpdatedBlockTip(const CBlockIndex* pindexNew, con
 
 		CDeterministicMNCPtr dmn = mnList.GetMNByOperatorKey(*activeMasternodeInfo.blsPubKeyOperator);
     if (!sporkManager.IsSporkActive(SPORK_10_MULTIPORT_ENABLED) && ((activeMasternodeInfo.service.GetPort() != Params().GetDefaultPort()) || (dmn->pdmnState->addr.GetPort() != Params().GetDefaultPort()))) {
+		state = MASTERNODE_REMOVED;
+		mnList.RemoveMN(dmn->proTxHash);
 		activeMasternodeInfo.proTxHash = uint256();
 		activeMasternodeInfo.outpoint.SetNull();
-        state = MASTERNODE_ERROR;
         strError = "Multiport is forbid by spork. Masternode on non-default port will NOT be active anymore.";
         LogPrintf("CActiveDeterministicMasternodeManager::Init -- ERROR: %s\n", strError);
 		Init();
