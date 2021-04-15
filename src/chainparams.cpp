@@ -613,16 +613,9 @@ public:
         // nodes with support for servicebits filtering should be at the top
         vSeeds.emplace_back("kyan-testnet.572133.club", true);
         vSeeds.emplace_back("kyan-testnet2.572133.club", true);
-        vSeeds.emplace_back("seed1.sappcoin.com", true);
-        vSeeds.emplace_back("seed2.sappcoin.com", true);
-        vSeeds.emplace_back("seed3.sappcoin.com", true);
-        vSeeds.emplace_back("seed4.sappcoin.com", true);
-        vSeeds.emplace_back("seed5.sappcoin.com", true);
-        vSeeds.emplace_back("seed6.sappcoin.com", true);
-        vSeeds.emplace_back("seed7.sappcoin.com", true);
-        vSeeds.emplace_back("seed8.sappcoin.com", true);
-        vSeeds.emplace_back("seed9.sappcoin.com", true);
-        vSeeds.emplace_back("seed10.sappcoin.com", true);
+		vSeeds.emplace_back("testnet1.4444.tools", true);
+        vSeeds.emplace_back("testnet2.4444.tools", true);
+		
 
         // Testnet Kyan addresses start with 'k'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,107);
