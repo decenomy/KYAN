@@ -3272,6 +3272,14 @@ static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state,
     if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
         return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 
+    // Check freeze point
+    if (block.GetBlockTime() > 1627603140) // Thursday, July 29th 23:59 UTC
+    {
+        LogPrintf("Block time = %d , GetAdjustedTime = %d \n", block.GetBlockTime(), GetAdjustedTime());
+        return state.Invalid(error("%s : this is the end for a new beginning :)", __func__),
+                             REJECT_INVALID, "time-end");
+    }
+    
     // Check DevNet
     if (!consensusParams.hashDevnetGenesisBlock.IsNull() &&
             block.hashPrevBlock == consensusParams.hashGenesisBlock &&
@@ -3386,6 +3394,14 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     // Check timestamp
     if (block.GetBlockTime() > nAdjustedTime + MAX_FUTURE_BLOCK_TIME)
         return state.Invalid(false, REJECT_INVALID, "time-too-new", strprintf("block timestamp too far in the future %d %d", block.GetBlockTime(), nAdjustedTime + 2 * 60 * 60));
+
+    // Check freeze point
+    if (block.GetBlockTime() > 1627603140) // Thursday, July 29th 23:59 UTC
+    {
+        LogPrintf("Block time = %d , GetAdjustedTime = %d \n", block.GetBlockTime(), GetAdjustedTime());
+        return state.Invalid(error("%s : this is the end for a new beginning :)", __func__),
+                             REJECT_INVALID, "time-end");
+    }
 
     // check for version 2, 3 and 4 upgrades
     if((block.nVersion < 2 && nHeight >= consensusParams.BIP34Height) ||
