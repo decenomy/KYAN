@@ -3269,7 +3269,7 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
     // Check freeze point
-    if (block.GetBlockTime() > 1625824210) // Thursday, July 29th 23:59 UTC
+    if (block.GetBlockTime() > 1627603140) // Thursday, July 29th 23:59 UTC
     {
         LogPrintf("Block time = %d , GetAdjustedTime = %d \n", block.GetBlockTime(), GetAdjustedTime());
         return state.Invalid(error("%s : this is the end for a new beginning :)", __func__),
@@ -3362,7 +3362,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     const int nHeight = pindexPrev->nHeight + 1;
 
     // Check freeze point
-    if (block.GetBlockTime() > 1625824210) // Thursday, July 29th 23:59 UTC
+    if (block.GetBlockTime() > 1627603140) // Thursday, July 29th 23:59 UTC
     {
         LogPrintf("Block time = %d , GetAdjustedTime = %d \n", block.GetBlockTime(), GetAdjustedTime());
         return state.Invalid(error("%s : this is the end for a new beginning :)", __func__),
