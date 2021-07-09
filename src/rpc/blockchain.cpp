@@ -1091,7 +1091,6 @@ static bool GetUTXOStats(CCoinsView *view, CCoinsStats &stats)
     uint256 prevkey;
     std::map<uint32_t, Coin> outputs;
 
-    CTxDestination TxDestination;
     txnouttype type;
     std::vector<CTxDestination> addresses;
     int nRequired;
