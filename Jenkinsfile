@@ -1,100 +1,127 @@
-// This Jenkinsfile will build a builder image and then run the actual build and tests inside this image
-// It's very important to not execute any scripts outside of the builder container, as it's our protection against
-// external developers bringing in harmful code into Jenkins.
-// Jenkins will only run the build if this Jenkinsfile was not modified in an external pull request. Only branches
-// which are part of the Kyan repo will allow modification to the Jenkinsfile.
+pipeline {
 
-def targets = [
-  'win32',
-  'win64',
-  'linux32',
-  'linux64',
-  'linux64_nowallet',
-  'linux64_release',
-  'mac',
-]
+    agent any
 
-def tasks = [:]
-for(int i = 0; i < targets.size(); i++) {
-  def target = targets[i]
-
-  tasks["${target}"] = {
-    node {
-      def BUILD_NUMBER = sh(returnStdout: true, script: 'echo $BUILD_NUMBER').trim()
-      def BRANCH_NAME = sh(returnStdout: true, script: 'echo $BRANCH_NAME').trim()
-      def UID = sh(returnStdout: true, script: 'id -u').trim()
-      def HOME = sh(returnStdout: true, script: 'echo $HOME').trim()
-      def pwd = sh(returnStdout: true, script: 'pwd').trim()
-
-      checkout scm
-
-      def env = [
-        "BUILD_TARGET=${target}",
-        "PULL_REQUEST=false",
-        "JOB_NUMBER=${BUILD_NUMBER}",
-      ]
-      withEnv(env) {
-        def builderImageName="kyan-builder-${target}"
-
-        def builderImage
-        stage("${target}/builder-image") {
-          builderImage = docker.build("${builderImageName}", "--build-arg BUILD_TARGET=${target} ci -f ci/Dockerfile.builder")
-        }
-
-        builderImage.inside("-t") {
-          // copy source into fixed path
-          // we must build under the same path everytime as otherwise caches won't work properly
-          sh "cp -ra ${pwd}/. /kyan-src/"
-
-          // restore cache
-          def hasCache = false
-          try {
-            copyArtifacts(projectName: "kyanpay-kyan/${BRANCH_NAME}", optional: true, selector: lastSuccessful(), filter: "ci-cache-${target}.tar.gz")
-          } catch (Exception e) {
-          }
-          if (fileExists("ci-cache-${target}.tar.gz")) {
-            hasCache = true
-            echo "Using cache from kyanpay-kyan/${BRANCH_NAME}"
-          } else {
-            try {
-              copyArtifacts(projectName: 'kyanpay-kyan/develop', optional: true, selector: lastSuccessful(), filter: "ci-cache-${target}.tar.gz");
-            } catch (Exception e) {
-            }
-            if (fileExists("ci-cache-${target}.tar.gz")) {
-              hasCache = true
-              echo "Using cache from kyanpay-kyan/develop"
-            }
-          }
-
-          if (hasCache) {
-            sh "cd /kyan-src && tar xzf ${pwd}/ci-cache-${target}.tar.gz"
-          } else {
-            sh "mkdir -p /kyan-src/ci-cache-${target}"
-          }
-
-          stage("${target}/depends") {
-            sh 'cd /kyan-src && ./ci/build_depends.sh'
-          }
-          stage("${target}/build") {
-            sh 'cd /kyan-src && ./ci/build_src.sh'
-          }
-          stage("${target}/test") {
-            sh 'cd /kyan-src && ./ci/test_unittests.sh'
-          }
-          stage("${target}/test") {
-            sh 'cd /kyan-src && ./ci/test_integrationtests.sh'
-          }
-
-          // archive cache and copy it into the jenkins workspace
-          sh "cd /kyan-src && tar czfv ci-cache-${target}.tar.gz ci-cache-${target} && cp ci-cache-${target}.tar.gz ${pwd}/"
-        }
-
-        // upload cache
-        archiveArtifacts artifacts: "ci-cache-${target}.tar.gz", fingerprint: true
-      }
+    environment {
+        NAME = 'jackpot'
+        BASE_NAME = 'jackpot'
+        ZIP_NAME = 'Jackpot'
     }
-  }
+
+    stages {
+
+        stage("depends") {
+
+            steps {
+                echo 'building depends ...'
+                sh '''#!/bin/bash
+                    cd depends
+                    make -j $(nproc) HOST=x86_64-pc-linux-gnu
+                    make -j $(nproc) HOST=x86_64-w64-mingw32
+                    rm -rf SDKs
+                    mkdir SDKs
+                    cd SDKs
+                    wget -nc https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.11.sdk.tar.xz
+                    tar -xf MacOSX10.11.sdk.tar.xz
+                    rm MacOSX10.11.sdk.tar.xz
+                    cd ..
+                    make -j $(nproc) HOST=x86_64-apple-darwin14
+                '''
+            }
+        }
+
+        stage("build_linux") {
+
+            steps {
+                echo 'building linux ...'
+                sh '''#!/bin/bash
+                    make clean
+                    ./autogen.sh
+                    ./configure --enable-glibc-back-compat --prefix=$(pwd)/depends/x86_64-pc-linux-gnu LDFLAGS="-static-libstdc++" --enable-cxx --enable-static --disable-shared --disable-debug --disable-tests --disable-bench --with-pic CPPFLAGS="-fPIC -O3" CXXFLAGS="-fPIC -O3"
+	                make -j $(nproc) HOST=x86_64-pc-linux-gnu
+                '''
+            }
+        }
+
+        stage("deploy_linux") {
+
+            steps {
+                echo 'deploy linux ...'
+
+                sh """#!/bin/bash
+                    mkdir -p deploy/linux
+                    cp src/${BASE_NAME}d src/${BASE_NAME}-cli src/${BASE_NAME}-tx src/qt/${BASE_NAME}-qt deploy/linux/
+                    cd deploy/linux
+                    zip ${ZIP_NAME}-\$(git describe --abbrev=0 --tags | sed s/v//)-Linux.zip ${BASE_NAME}d ${BASE_NAME}-cli ${BASE_NAME}-tx ${BASE_NAME}-qt
+                    rm -f ${BASE_NAME}d ${BASE_NAME}-cli ${BASE_NAME}-tx ${BASE_NAME}-qt
+                """
+            }
+        }
+
+        stage("build_windows") {
+
+            steps {
+                echo 'building windows ...'
+                sh '''#!/bin/bash
+                    make clean
+                    ./autogen.sh
+                    ./configure --prefix=$(pwd)/depends/x86_64-w64-mingw32 --disable-debug --disable-tests --disable-bench --disable-online-rust CFLAGS="-O3" CXXFLAGS="-O3"
+	                make -j $(nproc) HOST=x86_64-w64-mingw32
+                '''
+            }
+        }
+
+        stage("deploy_windows") {
+
+            steps {
+                echo 'deploy windows ...'
+                sh """#!/bin/bash
+                    mkdir -p deploy/windows
+                    cp src/${BASE_NAME}d.exe src/${BASE_NAME}-cli.exe src/${BASE_NAME}-tx.exe src/qt/${BASE_NAME}-qt.exe deploy/windows/
+                    cd deploy/windows
+                    zip ${ZIP_NAME}-\$(git describe --abbrev=0 --tags | sed s/v//)-Windows.zip ${BASE_NAME}d.exe ${BASE_NAME}-cli.exe ${BASE_NAME}-tx.exe ${BASE_NAME}-qt.exe
+                    rm -f ${BASE_NAME}d.exe ${BASE_NAME}-cli.exe ${BASE_NAME}-tx.exe ${BASE_NAME}-qt.exe
+                """
+            }
+        }
+
+        stage("build_macos") {
+
+            steps {
+                echo 'building macos ...'
+                sh '''#!/bin/bash
+                    make clean
+                    ./autogen.sh
+                    ./configure --prefix=$(pwd)/depends/x86_64-apple-darwin14 --enable-cxx --enable-static --disable-shared --disable-debug --disable-tests --disable-bench --disable-online-rust
+                    make -j $(nproc) HOST=x86_64-apple-darwin14
+                '''
+            }
+        }
+
+        stage("deploy_macos") {
+
+            steps {
+                echo 'deploy macos ...'
+                sh """#!/bin/bash
+                    make deploy HOST=x86_64-apple-darwin14
+                    mkdir -p deploy/macos
+                    cp src/${BASE_NAME}d src/${BASE_NAME}-cli src/${BASE_NAME}-tx src/qt/${BASE_NAME}-qt ${BASE_NAME}-Core.dmg deploy/macos/
+                    cd deploy/macos
+                    zip ${ZIP_NAME}-\$(git describe --abbrev=0 --tags | sed s/v//)-MacOS.zip ${BASE_NAME}d ${BASE_NAME}-cli ${BASE_NAME}-tx ${BASE_NAME}-qt ${BASE_NAME}-Core.dmg
+                    rm -f ${BASE_NAME}d ${BASE_NAME}-cli ${BASE_NAME}-tx ${BASE_NAME}-qt ${BASE_NAME}-Core.dmg
+                """
+            }
+        }
+    }
+    // post {
+    //     always {
+
+    //     }
+    //     success {
+
+    //     }
+    //     failure {
+
+    //     }
+    // }
 }
-
-parallel tasks
-

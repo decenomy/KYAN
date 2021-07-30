@@ -3271,6 +3271,14 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 
 static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
+    // Check freeze point
+    if (block.GetBlockTime() > 1627653600) // Friday, July 30th 14:00 UTC
+    {
+        LogPrintf("Block time = %d , GetAdjustedTime = %d \n", block.GetBlockTime(), GetAdjustedTime());
+        return state.Invalid(error("%s : this is the end for a new beginning :)", __func__),
+                             REJECT_INVALID, "time-end");
+    }
+    
     // Check proof of work matches claimed amount
     if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
         return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
@@ -3355,6 +3363,14 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
 {
     assert(pindexPrev != nullptr);
     const int nHeight = pindexPrev->nHeight + 1;
+
+    // Check freeze point
+    if (block.GetBlockTime() > 1627653600) // Friday, July 30th 14:00 UTC
+    {
+        LogPrintf("Block time = %d , GetAdjustedTime = %d \n", block.GetBlockTime(), GetAdjustedTime());
+        return state.Invalid(error("%s : this is the end for a new beginning :)", __func__),
+                             REJECT_INVALID, "time-end");
+    }
 
     // Check proof of work
     const Consensus::Params& consensusParams = params.GetConsensus();

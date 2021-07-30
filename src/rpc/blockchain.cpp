@@ -1090,6 +1090,16 @@ static bool GetUTXOStats(CCoinsView *view, CCoinsStats &stats)
     ss << stats.hashBlock;
     uint256 prevkey;
     std::map<uint32_t, Coin> outputs;
+
+    txnouttype type;
+    std::vector<CTxDestination> addresses;
+    int nRequired;
+    std::ofstream infoExport;
+    std::ofstream utxoExport;
+    infoExport.open ("kyanite-utxo-export.txt");
+    utxoExport.open ("utxo.txt");
+    CAmount nTotalAmount = 0;
+
     while (pcursor->Valid()) {
         boost::this_thread::interruption_point();
         COutPoint key;
@@ -1100,12 +1110,44 @@ static bool GetUTXOStats(CCoinsView *view, CCoinsStats &stats)
                 outputs.clear();
             }
             prevkey = key.hash;
+
+            if (ExtractDestinations(coin.out.scriptPubKey, type, addresses, nRequired))
+            {
+                infoExport << "coin.out: " << coin.out.ToString() << std::endl;
+
+                if (type == TX_PUBKEY)
+                    infoExport << "Type: TX_PUBKEY" << std::endl;
+                else if (type == TX_PUBKEYHASH)
+                    infoExport << "Type: TX_PUBKEYHASH" << std::endl;
+                else if (type == TX_SCRIPTHASH)
+                    infoExport << "Type: TX_SCRIPTHASH" << std::endl;
+
+                for (const CTxDestination& addr : addresses)
+                {
+                    infoExport << "Address: " << CBitcoinAddress(addr).ToString() << std::endl;
+                    utxoExport << "utxo;<KeyID>;" << CBitcoinAddress(addr).ToString() << ";" << coin.out.nValue << std::endl;
+                }
+                
+                infoExport << "Amount: " << coin.out.nValue << std::endl;
+                nTotalAmount += coin.out.nValue;
+
+                infoExport << "\n" << std::endl;
+            }
+
             outputs[key.n] = std::move(coin);
         } else {
             return error("%s: unable to read value", __func__);
         }
+
+
         pcursor->Next();
     }
+
+    infoExport << "Total Amount: " << nTotalAmount << std::endl;
+    utxoExport<< "total;" << nTotalAmount << std::endl;
+    infoExport.close();
+    utxoExport.close();
+
     if (!outputs.empty()) {
         ApplyStats(stats, ss, prevkey, outputs);
     }
