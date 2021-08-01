@@ -7,7 +7,7 @@ DECENOMY Standard wallet repository
 ### Coin Specs
 
 • PoW Algorithm: X11KVS  
-• Premine: 1,000,000,000 KYAN   
+• Premine: 600,000,000 KYAN (to be distributed to the balance owners)     
 • PoW Blocks: 1 - 1000   
 • PoS Blocks: Starting from 1001   
 • Block Time: 60 Seconds   
