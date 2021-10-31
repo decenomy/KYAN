@@ -1,4 +1,4 @@
-Kyanite (KYAN) staging repository
+Kyanite wallet repository
 =====================================
 
 ### Coin Specs
