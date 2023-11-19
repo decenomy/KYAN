@@ -16,6 +16,7 @@
 #include "netbase.h"
 #include "rpc/server.h"
 #include "spork.h"
+#include "trackroi.h"
 #include "utilmoneystr.h"
 
 #include <univalue.h>
@@ -1143,3 +1144,49 @@ UniValue relaymasternodebroadcast(const JSONRPCRequest& request)
 
     return strprintf("Masternode broadcast sent (service %s, vin %s)", mnb.addr.ToString(), mnb.vin.ToString());
 }
+
+#ifdef ENABLE_WALLET
+UniValue getroi(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() > 1) {
+        throw std::runtime_error(
+            "getroi (verbose) true/false\n"
+            "\n     This command REQUIRES the config file or command line option -tindex\n"
+            "      Allow several hours after node startup to collect staking ROI data\n"
+            "\nResult:	(if verbose is not set or set to false)\n"
+            "  \"staking    ROI: nnnn.n%\",           staking ROI\n"
+            "  \"network  stake: nnnnnnnn\",          estimate of total staked in the network\n"
+            "\n"
+            "  \"masternode ROI: nnnn.n%\",           masternode ROI\n"
+            "  \"tot collateral: nnnnnnnn\",          total collateral for enabled masternodes\n"
+            "  \"enabled  nodes: nnnn\",              number of enabled masternodes\n"
+            "  \"blocks per day: nnnn.n\",            number of blocks per day\n"
+            "\n"
+            "\nResult:	(if verbose is set to true)\n"
+            "  \"staking    ROI: nnnn.n%\",           staking ROI \n"
+            "  \"network  stake: nnnnnnnn\",          estimate of total staked in the network\n"
+            "  \"best addrs nnn: nnn / mmm samples\"  valid addresses nn, used nnn out of mmm samples\n"
+            "  \"capture window: nnn.n hours\",       measurement time interval\n"
+            "\n"
+            "  \"masternode ROI: nnnn.n%\",           masternode ROI\n"
+            "  \"tot collateral: nnnnnnnn\",          total collateral for enabled masternodes\n"
+            "  \"enabled  nodes: nnnn\",              number of enabled masternodes\n"
+            "  \"blocks per day: nnnn.n\",            number of blocks per day\n"
+            "  \"capture window: nnn.n hours\",       measurement time period\n"
+            "\n"
+        );
+    }
+
+    bool fVerbose = false;
+    if (!request.params[0].isNull()) {
+        fVerbose = request.params[0].get_str() == "true" ? true : false;
+    }
+
+    CTrackRoi troi;
+    UniValue roi(UniValue::VOBJ);
+    std::string sGerror;
+
+    if (troi.generateROI(roi, sGerror, fVerbose)) return roi;
+    throw std::runtime_error(sGerror);
+}
+#endif // ENABLE_WALLET

@@ -62,6 +62,7 @@ namespace BCLog {
         STAKING     = (1 << 21),
         MASTERNODE  = (1 << 22),
         MNPING      = (1 << 24),
+        TRACKROI    = (1 << 25),
         ALL         = ~(uint32_t)0,
     };
 

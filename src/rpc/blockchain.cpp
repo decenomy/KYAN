@@ -16,6 +16,7 @@
 #include "policy/policy.h"
 #include "rpc/server.h"
 #include "sync.h"
+#include "trackroi.h"
 #include "txdb.h"
 #include "util.h"
 #include "utilmoneystr.h"
@@ -1460,6 +1461,10 @@ UniValue rewindblockindex(const JSONRPCRequest& request)
         g_connman->DisconnectAll();
         g_connman->ClearBanned();
         masternodeSync.Reset();
+#ifdef ENABLE_WALLET
+        CTrackRoi troi;
+        troi.resetVroi();
+#endif
     }
 
     return NullUniValue;

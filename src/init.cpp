@@ -51,6 +51,7 @@
 #include "validationinterface.h"
 
 #ifdef ENABLE_WALLET
+#include "trackroi.h"
 #include "wallet/db.h"
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h"
@@ -210,8 +211,11 @@ void PrepareShutdown()
     StopRPC();
     StopHTTPServer();
 #ifdef ENABLE_WALLET
-    if (pwalletMain)
+    if (pwalletMain) {
         bitdb.Flush(false);
+        CTrackRoi troi;
+        troi.dumpVroi();
+    }
     GenerateBitcoins(false, NULL, 0);
 #endif
     MapPort(false);
@@ -1667,6 +1671,12 @@ bool AppInit2()
     }
 
     // ********************************************************* Step 10: setup layer 2 data
+
+#ifdef ENABLE_WALLET
+    uiInterface.InitMessage(_("Loading roi cache..."));
+    CTrackRoi troi;
+    troi.loadVroi();	// is ok if pwalletMain is not actived
+#endif
 
     uiInterface.InitMessage(_("Loading masternode cache..."));
 

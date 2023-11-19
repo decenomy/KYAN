@@ -179,6 +179,7 @@ BITCOIN_CORE_H = \
   timedata.h \
   tinyformat.h \
   torcontrol.h \
+  trackroi.h \
   txdb.h \
   txmempool.h \
   guiinterface.h \
@@ -284,6 +285,7 @@ libbitcoin_wallet_a_SOURCES = \
   messagesigner.cpp \
   legacy/stakemodifier.cpp \
   kernel.cpp \
+  trackroi.cpp \
   wallet/db.cpp \
   wallet/rpcdump.cpp \
   wallet/rpcwallet.cpp \

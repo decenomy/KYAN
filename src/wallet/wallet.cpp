@@ -17,6 +17,7 @@
 #include "policy/policy.h"
 #include "script/sign.h"
 #include "spork.h"
+#include "trackroi.h"
 #include "util.h"
 #include "utilmoneystr.h"
 
@@ -924,7 +925,12 @@ bool CWallet::AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlockIndex
         }
 
         bool fExisted = mapWallet.count(tx.GetHash()) != 0;
-        if (fExisted && !fUpdate) return false;
+        if (!fExisted) {
+            CTrackRoi troi;
+            CWalletTx wtx(this, tx);
+            troi.saveStake(wtx, pIndex);
+        }
+        else if (fExisted && !fUpdate) return false;
         if (fExisted || IsMine(tx) || IsFromMe(tx)) {
 
             /* Check if any keys in the wallet keypool that were supposed to be unused
