@@ -20,12 +20,12 @@
 
 /*	Design Notes
     The ROI calculation works by analyzing current and past related transactions starting
-    with "back", the transaction with the highest blocktime, then analyzing each "prev" 
-    transaction until either a terminal transaction is encountered or the transaction 
+    with "back", the transaction with the highest blocktime, then analyzing each "prev"
+    transaction until either a terminal transaction is encountered or the transaction
     sequence becomes to old.
 
     Conventions used are the same as when dealing with vectors:
-    
+
     std::vector<> vect -- where data is entered using vect.push_back(data),
     "vect" has 	vect.back(),  the most recently entered data
     	   and	vect.front(), the oldest data
@@ -39,10 +39,10 @@
         and moving one by one towards "front"
         A transaction immediately toward 	"prev"
         "front" from "cur"
-        
+
     Terms used:
-    
-        stake:	the amount of coin in the transaction that was 
+
+        stake:	the amount of coin in the transaction that was
                 responsible for the coinstake event.
         spiff:	the reward added to the stake for the coinstake event.
         mnPay:	the masternode payment amount
@@ -69,7 +69,7 @@
         front   transaction with the lowest blocktime
 
     Analyzed transactions fall int 4 catagories:
-    
+
         regular:	coinstake with 3 vout items
             one vout.nValue = 0
             one vout.nValue = staked  + spiff
@@ -142,7 +142,7 @@
 }
 
 
-A coinstake transaction has 
+A coinstake transaction has
 
     One (1) input
 	txid:	ID of previous transaction
@@ -257,7 +257,7 @@ public:
     These data come from vROI.back(), the first available sample.
     The values remain immutable during the analysis of a stake transaction chain.
 
-1a) Data about the last (oldest) sample in vROI is collected accurately determine 
+1a) Data about the last (oldest) sample in vROI is collected accurately determine
     blocks / day as follows:
 
         nLowestHeight		the earliest known height
@@ -291,7 +291,7 @@ public:
     and temporarily save it "addr"
 
 5)  Create an ROI stake analysis sample "sa"
-    
+
 class CStakeAnalyze	-- hereinafter known as SA data
 {
 public:
@@ -301,11 +301,11 @@ public:
     int           nDepth;       // set by caller
 };
 
-6)  Get the current transaction status and trace back through 
+6)  Get the current transaction status and trace back through
     previous transactions to build a stake chain for further analysis.
 
     sa inputs = current transaction
-    
+
     See the description for traceprevious().
 
     Transaction status is one of three types
@@ -316,7 +316,7 @@ public:
 7)  If the tx is valid:
     Save the SA data in mapPubAddrs by ADDRESS fro further ROI analysis
     Save the block height in StakeSeen
-    
+
     If the tx has chainstake parent, set up the previous tx for analysis
     ...else continue
 
@@ -324,7 +324,7 @@ public:
     Trace back through these transactions to extract ROI data
     See description for traceprevious()
 
-    While subsequent tx status remain true, repeat the equivalent of steps 6) thru 9) 
+    While subsequent tx status remain true, repeat the equivalent of steps 6) thru 9)
     for each subsequent satemp transaction related to the current stake.
 
 9) Terminate analysis if there are insufficient data sammples for accurate ROI calculations
@@ -341,9 +341,9 @@ public:
 
 Known:
       A stake reward will be known as a "spiff"
-    
-    There are 1440 spiff's per day, but not really. This will vary slightly depending on how 
-    often a new block is created. For the purpose of this analysis, 1440 will be used throughout. 
+
+    There are 1440 spiff's per day, but not really. This will vary slightly depending on how
+    often a new block is created. For the purpose of this analysis, 1440 will be used throughout.
     The code uses the actual number of blocks per day.
 
     Incoming transaction data. For each coinstake transaction:
@@ -352,8 +352,8 @@ Known:
     current height	block height of this coinstake
     previous height	height of this stake's previous tx
 
-Because of the psuedo-random variability in the Age for each stake event, any individual staking 
-event will produce un-reliable ROI, however the average over a large number of samples will converge 
+Because of the psuedo-random variability in the Age for each stake event, any individual staking
+event will produce un-reliable ROI, however the average over a large number of samples will converge
 to the true ROI over time.
 
                 ----- the ROI calculation -----
@@ -372,9 +372,9 @@ Additionally, the trace back of previous transactions continues in order to prov
         3) the staking timestamp is within the allowed lookback window
 
 Third, transaction sets which aggregate to a particular address are selected for ROI analysis when the
-    number of aggregants exceed a predetermined threshold. (example threshold, 10 data points). The 
+    number of aggregants exceed a predetermined threshold. (example threshold, 10 data points). The
     weight of each sample is calculated using the stake amount and the elapsed block count.
-    
+
     elapsed block count = block height of staking event - block height when tx was first added to the blockchain
     stake amount	= value of the staking amount just prior to the staking event
 
@@ -383,42 +383,16 @@ Third, transaction sets which aggregate to a particular address are selected for
     The weights for each sample in the address data set are then averaged and saved
     Eack "validated" address data set is processed in the same manner.
 
-ROI method one(1). The mean value (average) of all the address data sets is used to calculate ROI as follows:
+ROI method. The mean value (average) of all the address data sets is used to calculate ROI as follows:
 
             Spiff * BlocksPerDay * 365
       ROI = --------------------------
                    MeanWeight
 
-ROI method two(0) The weighted mean value of all of the address data sets is used to calculate ROI.
-
-Wikipedia provides a good explanation:
-{quote}
-    The weighted arithmetic mean is similar to an ordinary arithmetic mean (the most common type of average),
-    except that instead of each of the data points contributing equally to the final average, some data points 
-    contribute more than others... If all the weights are equal, then the weighted mean is the same as the 
-    arithmetic mean. While weighted means generally behave in a similar fashion to arithmetic means,
-{end quote}
-
-    address data point	= number of samples in this particular address aggreation
-    total data points	= number of sample data points in all validated addresses
-
-where for weighted mean...
-    participation %	= address data points / total data points
-
-    elapsed block count = block height of staking event - block height when tx was first added to the blockchain
-    stake amount        = value of the staking amount just prior to the staking event
-
-    The weighted mean for a particular address aggreation can be expressed as:
-
-    weighted mean = participation * StakeReward * BlocksPerDay * 365
-and...
-          Spiff * BlocksPerDay * 365
-    ROI = --------------------------
-          sum of the weighted means
 */
 
 bool CTrackRoi::generateROI(UniValue& roi, std::string& sGerror, bool fVerbose)
-{    
+{
     if (!fTxIndex) {
         sGerror = "getroi: -txindex REQUIRED to enable ROI calculation";
         return false;
@@ -473,14 +447,14 @@ bool CTrackRoi::generateROI(UniValue& roi, std::string& sGerror, bool fVerbose)
     int64_t nBackBlkTime	= vROIcopy.back().nTime;
 //	step 1a)
     unsigned int nLowestHeight	= vROIcopy.front().nHeight;
-    int64_t nEarliestTime	= vROIcopy.front().nTime;    
+    int64_t nEarliestTime	= vROIcopy.front().nTime;
     int64_t nCollectionTime	= vROIcopy.back().nTime - nEarliestTime;	// elapsed collection used in ROI screen presentation
 
 /*	BEGIN setup analysis
 	Process each sample to see if it is valid and get public key address's
 
         each sample contains:
-        
+
 class CStakeSamples
 {
 public:
@@ -590,7 +564,7 @@ public:
 
             nCurrentHeight = satemp.nPrevHeight;	// update for next tx in chain if there is one
             nDepth   	   = satemp.nDepth;		// for subsequent previous transaction
-        } 
+        }
     } // END ROI setup analysis
 //	step 9)
     if (mapPubAddrs.size() < nMinAddrsBuckets) {
@@ -622,7 +596,7 @@ public:
     float nMN_ROI    = nMNrewardsPerDay * (float)nMNpayment * (float)36500;	// * 100 for nn.nn% result presentation
     nMN_ROI	     /= (float)nEnabled;
     nMN_ROI	     /= (float)nCollateral;
-    
+
 //	step 11)
 // calculate staking ROI
     CAmount nSpiff   = nBlkReward - nMNpayment;
@@ -764,13 +738,14 @@ public:
         6) masternode payment not found in current tx
         7) multiple masternode payment values found in first tx in a chain, ambiguious condition, reject
 
-    
+
     Reasons for 0	terminating transaction
         1) previous tx is not a coinstake, however stake value is present and there has been no collateral change
-        2) previous tx is a split transaction, further traceprevious would allow split 
+        2) previous tx is a split transaction, further traceprevious would allow split
            stakes to converge on a single tx chain and duplicate datapoints
         3) starting timestamp of previous tx is beyond the data sample window
         4) previous tx is not a coinstake, current tx terminates chain
+        5) current transaction stake value == masternode payment value, no previous transaction
 
     inputs:
         tx		current tx
@@ -787,7 +762,7 @@ public:
     int64_t       nPrevTime;    // set by this method
     int           nDepth;       // set by caller, modified by this method
 
-traceprevious() performs multiple validation steps and provides previous transaction 
+traceprevious() performs multiple validation steps and provides previous transaction
 data points for the subsequent step in the tx chain traceprevious. Specfically:
 
     tx		updates tx to point to previous transaction
@@ -886,7 +861,7 @@ public:
             if (mi != mapBlockIndex.end()) {
                 pPrevBlkIndex = (*mi).second;
             } else {
-                LogPrintf("ERROR: CTrackRoi::traceprevious could not find previous block index %s\n",hash_block.GetHex()); 
+                LogPrintf("ERROR: CTrackRoi::traceprevious could not find previous block index %s\n",hash_block.GetHex());
                 return -1;
             }
         }
