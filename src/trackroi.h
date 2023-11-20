@@ -46,9 +46,9 @@ private:
 // set nMinimumGroupSize = 1 to just eliminate singleton samples. Set > 10 to emulate Vaultwatch... somewhat
     const int nMinBucketSize	= 10;		// minimum samples ABOVE which each qualified publicKeyAddress must have to calculate stake ROI
 // the next two overlap in functionality
-    const int nMinAddrsBuckets  = 7;		// minimum number of qualified address buckets to calculate weighted stake ROI, i.e. bucket size > nMinimumGroupSize
+    const int nMinAddrsBuckets  = 7;		// minimum number of qualified address buckets to calculate stake ROI, i.e. bucket size > nMinimumGroupSize
     const int nMinWeightPoints	= 480;		// minimum number of weight data points to calculate qualified stake ROI
-    const bool fTroiUseRange	= true;		// show range of ROI values
+    const int nTroiUseRange	= 1;		// tri-state 0) = method 1 ROI only, 1) = average method 1, method 2 results, 2) = show both as range of results
     const bool fEnableCSV2Log	= false;	// enable output of CSV formated sample information to debug.log when -debug=trackroi is set
 // end tuning
 
@@ -76,9 +76,9 @@ public:
         vROI.resize(0);
         nLastRoilistSave = 0;
     }
-    bool UseRange()
+    int UseRange()
     {
-        return fTroiUseRange;
+        return nTroiUseRange;
     }
 };
 

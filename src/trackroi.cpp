@@ -403,7 +403,7 @@ Second, create a weighted upper and lower bound based on the number of samples v
 
 Third, set the upper and lower bound
 
-    LOWER = adjustment * average weight  / 100		~ 1%
+    LOWER = adjustment * average weight  / 200		~ 0.5%
     UPPER = adjustment * average weeight * 10		~ 1000%
 
 Forth, trim the smallest and largest weights from the sample set that exceed the bounds
@@ -694,13 +694,13 @@ public:
         nAROI     = 0;
     } else {
 // remove outliers
-// calculate the average weight then remove the individual samples that are less than 1% and exceed 1000% of the average
+// calculate the average weight then remove the individual samples that are less than 0.5% and exceed 1000% of the average
 // re-calculate the average with the pruned sample set
         float nLowerBound = (float)sampleInterval;
         nLowerBound	 /= (float)vROIcopy.size();
         float nUpperBound = nLowerBound;
         nAweight     /= (float)nAwcount;
-        nLowerBound  *= nAweight / 100;
+        nLowerBound  *= nAweight / 200;
         nUpperBound  *= nAweight * 10;
         nAweight      = 0;
         for (auto nAw: vAverage) {
@@ -738,14 +738,18 @@ public:
         roi.push_back(Pair("no staking  ROI", "insufficient data"));
     } else {
         nQweight /= (float)COIN;
-        roi.push_back(Pair("staking    ROI", strprintf("%4.1f%%", nROI)));
-        if (fTroiUseRange) {
-            roi.push_back(Pair(" range     ROI", strprintf("%4.1f%%", nAROI)));
+        if (nTroiUseRange > 0) {		// use second ROI method
+            if (nTroiUseRange < 2) {		// average the ROI results unless reporting both
+                nROI += nAROI;
+                nROI /= (float)2;
+            }
             nAweight /= (float)COIN;
             nQweight += nAweight;
             nQweight /= (float)2;
         }
-        roi.push_back(Pair("network  stake", CAmount2Kwithcommas((CAmount)nQweight)));
+        roi.push_back(Pair("staking    ROI", strprintf("%4.1f%%", nROI)));
+        if (nTroiUseRange > 1) roi.push_back(Pair(" range     ROI", strprintf("%4.1f%%", nAROI)));
+        roi.push_back(Pair("network  stake", CAmount2Kwithcommas((CAmount)nQweight)));		// report full range, both values
         if (fVerbose) roi.push_back(Pair(strprintf("best addrs %3d", nQwcount), strprintf("%d of %d samples", nMwcount, nAwcount)));
     }
     float nDisplayHours = (float)nCollectionTime;

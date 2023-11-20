@@ -1151,7 +1151,7 @@ UniValue getroi(const JSONRPCRequest& request)
     CTrackRoi troi;
     
     if (request.fHelp || request.params.size() > 1) {
-        if (troi.UseRange()) {
+        if (troi.UseRange() > 1) {
 
             throw std::runtime_error(
                 "getroi (verbose) true/false\n"
