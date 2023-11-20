@@ -389,6 +389,27 @@ ROI method. The mean value (average) of all the address data sets is used to cal
       ROI = --------------------------
                    MeanWeight
 
+ ----------------------------------------------------------------------------
+ 
+The second ROI calculation method.
+
+First, calculate the average of all data sample weights. 
+
+Second, create a weighted upper and lower bound based on the number of samples vs the maximum number of samples
+
+                     size of sample set
+    adjustment = --------------------------
+                 maximum size of sample set		// vROI.size()
+
+Third, set the upper and lower bound
+
+    LOWER = adjustment * average weight  / 100		~ 1%
+    UPPER = adjustment * average weeight * 10		~ 1000%
+
+Forth, trim the smallest and largest weights from the sample set that exceed the bounds
+
+Fifth, average the remaining samples and use this value to calculate ROI
+
 */
 
 bool CTrackRoi::generateROI(UniValue& roi, std::string& sGerror, bool fVerbose)
@@ -421,7 +442,7 @@ bool CTrackRoi::generateROI(UniValue& roi, std::string& sGerror, bool fVerbose)
 
 // a map of public address contain a list  stake sample chains
     std::unordered_map<std::string, std::vector<CStakeAnalyze>> mapPubAddrs;
-    mapPubAddrs.reserve(nROIsize);
+    mapPubAddrs.reserve(2 * nROIsize);
     std::vector<unsigned int> vStakeSeen;
     vStakeSeen.reserve(nROIsize);
 /*
@@ -605,6 +626,7 @@ public:
     int nQwcount     = 0;		// group count
     int nMwcount     = 0;		// group sample count
 // average weight
+    float nAweight   = 0;
     int nAwcount     = 0;		// total sample count
 // qualified ROI
     float nROI       = nMNrewardsPerDay * (float)36500;	// 1440 * 365 * 100     -       blksPerDay * yearOfDays * 100 for presentation of nn.nn% result
@@ -614,8 +636,11 @@ public:
     float nSetWeight = 0;
     int nSort 	     = 0;
 
-    bool fBCLogROI = g_logger->WillLogCategory(BCLog::TRACKROI);
-// for debuging
+    std::vector<float> vAverage;
+    vAverage.reserve(2 * vROIcopy.size());
+
+    bool fBCLogROI = fEnableCSV2Log && g_logger->WillLogCategory(BCLog::TRACKROI);
+
     for (auto& pAddress: mapPubAddrs) {     // generate csv style output to debug.log
         int nSize = (pAddress.second).size();
         if (fBCLogROI) {
@@ -638,8 +663,12 @@ public:
                 LogPrintf("%s", stkout);
                 nSort++;
             }
-            nSetWeight += ((float)sa.nStake * (float)(sa.nCurHeight - sa.nPrevHeight + nStkMinDepth));	// total address data set weight
+            float(nSampleWeight) = ((float)sa.nStake * (float)(sa.nCurHeight - sa.nPrevHeight + nStkMinDepth));	// this sample weight
+            vAverage.push_back(nSampleWeight);
+            nSetWeight += nSampleWeight;									// total address data set weight
         }
+        nAweight += nSetWeight;
+        nAwcount += nSize;
 // for qualified weight, sum the average weight for a public address data set and later divide by the number of sets nQcount
 //
 //	average Weights by qualified Address
@@ -652,7 +681,6 @@ public:
 
             nMwcount += nSize;				// total number of set data points
         }
-        nAwcount += nSize;
     }
     if (nQweight < (float)nSpiff) {
         nROI     = 0;
@@ -661,7 +689,32 @@ public:
         nQweight /= (float)nQwcount;	// average weight
         nROI	 /= (float)nQweight;
     }
-    LogPrint(BCLog::TRACKROI, "CTrackRoi::generateROI qual staking ROI %3.2f%%, addrs %d, samps %d, cnt %8.0f, weight %8.0f\n", nROI, nQwcount, nMwcount, nAwcount, nQweight);
+    int nAvgCount = 0;
+    if (nAwcount  < 1) {		// do not divide by zero
+        nAROI     = 0;
+    } else {
+// remove outliers
+// calculate the average weight then remove the individual samples that are less than 1% and exceed 1000% of the average
+// re-calculate the average with the pruned sample set
+        float nLowerBound = (float)sampleInterval;
+        nLowerBound	 /= (float)vROIcopy.size();
+        float nUpperBound = nLowerBound;
+        nAweight     /= (float)nAwcount;
+        nLowerBound  *= nAweight / 100;
+        nUpperBound  *= nAweight * 10;
+        nAweight      = 0;
+        for (auto nAw: vAverage) {
+            if (nAw < nLowerBound) continue;
+            if (nAw > nUpperBound) continue;
+            nAweight += nAw;
+            nAvgCount++;
+        }
+        nAweight /= (float)nAvgCount;
+        nAROI    /= nAweight;
+    }
+
+    LogPrint(BCLog::TRACKROI, "CTrackRoi::generateROI qual staking ROI %3.2f%%, addrs %d, samps %d, cnt %d, weight %8.0f\n", nROI, nQwcount, nMwcount, nAwcount, nQweight);
+    LogPrint(BCLog::TRACKROI, "CTrackRoi::generateROI adjavg stake ROI %3.2f%%, adjtd %d, averg %d  adj weight %8.0f\n", nAROI, nAvgCount, nAwcount, nAweight);
     LogPrint(BCLog::TRACKROI, "CTrackRoi::generateROI masternode ROI %3.2f%%\n",nMN_ROI);
 /*
         staking    ROI : nnnn.n%
@@ -678,7 +731,7 @@ public:
         blocks per day: nnnn.n
         data    window: nnn.n hours			only with fVerbose
 */
-    bool fnoROI = nROI < 1 || nQwcount < nMinAddrsBuckets || nMwcount < nMinWeightPoints;
+    bool fnoROI = nROI < 1 || nAROI < 1 || nQwcount < nMinAddrsBuckets || nMwcount < nMinWeightPoints;
 
 // print staking ROI info
     if (fnoROI) {
@@ -686,6 +739,12 @@ public:
     } else {
         nQweight /= (float)COIN;
         roi.push_back(Pair("staking    ROI", strprintf("%4.1f%%", nROI)));
+        if (fTroiUseRange) {
+            roi.push_back(Pair(" range     ROI", strprintf("%4.1f%%", nAROI)));
+            nAweight /= (float)COIN;
+            nQweight += nAweight;
+            nQweight /= (float)2;
+        }
         roi.push_back(Pair("network  stake", CAmount2Kwithcommas((CAmount)nQweight)));
         if (fVerbose) roi.push_back(Pair(strprintf("best addrs %3d", nQwcount), strprintf("%d of %d samples", nMwcount, nAwcount)));
     }

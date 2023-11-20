@@ -47,7 +47,9 @@ private:
     const int nMinBucketSize	= 10;		// minimum samples ABOVE which each qualified publicKeyAddress must have to calculate stake ROI
 // the next two overlap in functionality
     const int nMinAddrsBuckets  = 7;		// minimum number of qualified address buckets to calculate weighted stake ROI, i.e. bucket size > nMinimumGroupSize
-    const int nMinWeightPoints	= 400;		// minimum number of weight data points to calculate qualified stake ROI
+    const int nMinWeightPoints	= 480;		// minimum number of weight data points to calculate qualified stake ROI
+    const bool fTroiUseRange	= true;		// show range of ROI values
+    const bool fEnableCSV2Log	= false;	// enable output of CSV formated sample information to debug.log when -debug=trackroi is set
 // end tuning
 
     static int sampleInterval;			// init in cpp file -- target number of blocks to hold in vROI = samDays * blks per day
@@ -73,6 +75,10 @@ public:
         LOCK(cs_track);
         vROI.resize(0);
         nLastRoilistSave = 0;
+    }
+    bool UseRange()
+    {
+        return fTroiUseRange;
     }
 };
 
