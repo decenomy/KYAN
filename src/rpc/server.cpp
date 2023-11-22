@@ -387,6 +387,7 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "bip38encrypt", &bip38encrypt, true },
         {"wallet", "bip38decrypt", &bip38decrypt, true },
         {"wallet", "getaddressinfo", &getaddressinfo, true },
+        {"wallet", "getbeststakeaddresses", &getbeststakeaddresses, false},
         {"wallet", "getroi", &getroi, false },
         {"wallet", "getstakingstatus", &getstakingstatus, false },
         {"wallet", "multisend", &multisend, false },

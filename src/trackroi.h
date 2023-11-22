@@ -63,11 +63,13 @@ private:
     CAmount traceprevious(CTransaction& tx, CStakeAnalyze& sa, CAmount nMNpayment, CAmount nBlkReward, unsigned int *nOldestHeight, int64_t *nOldestTime, unsigned int nBackHeight);
     void saveToMap(std::unordered_map<std::string, std::vector<CStakeAnalyze>>& mapPubAddrs, CStakeAnalyze& sa, std::string& addressRet);
     std::string CAmount2Kwithcommas(CAmount koin);
+    float getMedian(std::vector<float>& vSamples);
 
 public:
     mutable RecursiveMutex cs_track;
     void saveStake(CTransaction& tx, const CBlockIndex* pindex);
-    bool generateROI(UniValue& roi, std::string& sGerror, bool fDetail);
+    bool generateROI(UniValue& roi, std::string& sGerror, bool fVerbose);
+    bool generateBestStakeAddrs(UniValue& best, std::string& sGerror);
     void loadVroi();
     void dumpVroi();
     void resetVroi()
@@ -91,6 +93,17 @@ public:
     CStakeDB();
     bool Write(const roivec_t& roiSet);
     bool Read(roivec_t& roiSet);
+};
+
+class CStakeBestAddress
+{
+public:
+    std::string sAddress;       // public address
+    int nCount;                 // number of samples in address set
+    float nMeanStake;           // average stake value in address set
+    float nMeanWeight;          // average weight in address set
+    float nMedianStake;
+    float nMedianWeight;
 };
 
 #  ifdef CTRACK_ROI_CPP

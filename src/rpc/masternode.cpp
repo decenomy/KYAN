@@ -1221,4 +1221,29 @@ UniValue getroi(const JSONRPCRequest& request)
     if (troi.generateROI(roi, sGerror, fVerbose)) return roi;
     throw std::runtime_error(sGerror);
 }
+
+UniValue getbeststakeaddresses(const JSONRPCRequest& request)
+{
+    CTrackRoi troi;
+    
+    if (request.fHelp || request.params.size() > 1) {
+        throw std::runtime_error(
+            "getbeststakeaddresses\n"
+            "\n     This command REQUIRES the config file or command line option -tindex\n"
+            "      Allow several hours after node startup to collect staking ROI data\n"
+            "\nResult:\n"
+            "  \"capture  window\": \" nn.n    hours\"\n"
+            "  \"nnnn  stakes at\": \"address  Kn6AEDy7QNFZCggHSAb9WWQbE6stG4sKwu\"\n"
+            "  \"   average size\": \"nnnn        weight nnn,nnn,nnn\"\n"
+            "  \"   median  size\": \"nnnn        weight nnn,nnn,nnn\"\n"
+            "\n"
+        );
+    }
+    UniValue best(UniValue::VOBJ);
+    std::string sGerror;
+
+    if (troi.generateBestStakeAddrs(best, sGerror)) return best;
+    throw std::runtime_error(sGerror);
+}
+
 #endif // ENABLE_WALLET

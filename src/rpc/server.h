@@ -220,6 +220,7 @@ extern UniValue getblockchaininfo(const JSONRPCRequest& request);
 extern UniValue getnetworkinfo(const JSONRPCRequest& request);
 extern UniValue multisend(const JSONRPCRequest& request);
 extern UniValue getroi(const JSONRPCRequest& request);
+extern UniValue getbeststakeaddresses(const JSONRPCRequest& request);
 
 extern UniValue getrawtransaction(const JSONRPCRequest& request); // in rpc/rawtransaction.cpp
 extern UniValue createrawtransaction(const JSONRPCRequest& request);

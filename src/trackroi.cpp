@@ -943,6 +943,7 @@ public:
 //	step 5)
 // set returned values
         sa.nPrevHeight = nPrevBlkHeight;
+        if (sa.nDepth < 0) return 0;                    // return now, calculating best staking addresses
         sa.nDepth += 1;
 //	step 6)
         if (sa.nStake == nMNpayment) return 0;		// prevTx has no predecessor, terminate tx chain
@@ -979,6 +980,225 @@ public:
     return prevStake;
 }
 
+// generate best staking address report
+bool CTrackRoi::generateBestStakeAddrs(UniValue& best, std::string& sGerror)
+{
+    if (!fTxIndex) {
+        sGerror = "getbeststakeaddresses: -txindex REQUIRED to enable best staking reporting";
+        return false;
+    }
+// BEGIN best staking calculation setup. Find all the useable stake sample and map them by publicKeyAddress
+
+    int nROIsize;
+    std::vector<CStakeSamples> vROIcopy;
+    {
+        LOCK(cs_track);
+
+        nROIsize = vROI.size();
+        if (sampleInterval == 0) {
+            sGerror = strprintf("Not enough data, waiting for confirmations");
+            return false;
+        }
+        if (nROIsize < nMinVroiSamples) {
+            sGerror = strprintf("Not enough data, need %d confirmations, have %d", nMinVroiSamples, nROIsize);
+            return false;
+        }
+// deep copy vROI
+        std::vector<CStakeSamples> vROItemp(vROI);
+        std::swap(vROItemp,vROIcopy);		// move to outer scope
+
+    }   // end LOCK(cs_track);
+
+// a map of public address contain a list  stake sample chains
+    std::unordered_map<std::string, std::vector<CStakeAnalyze>> mapPubAddrs;
+    mapPubAddrs.reserve(2 * nROIsize);
+/*
+    address	=> [		samples are not in any particular order
+            sample00	=> [
+                tx_chain00.back,
+                X.. tx_chains00's....
+                txchain00.terminal
+            ],
+            sample01	=> [
+                tx_chain01.back,
+                Y tx_chain01's....
+                txchain01.terminal
+            ],
+            ...
+    ];
+*/
+//	step 1)
+    CMasternode cmn;
+    unsigned int nBackHeight	= vROIcopy.back().nHeight;
+    CAmount nMNpayment		= cmn.GetMasternodePayment(nBackHeight);
+    CAmount nBlkReward		= cmn.GetBlockValue(nBackHeight);
+    int64_t nBackBlkTime	= vROIcopy.back().nTime;
+//	step 1a)
+    unsigned int nLowestHeight	= 0;				// unused, needed for call to traceprev
+    int64_t nEarliestTime	= 0;				// unused, needed for call to traceprev
+
+/*	BEGIN setup analysis
+	Process each sample to see if it is valid and get public key address's
+
+        each sample contains:
+
+class CStakeSamples
+{
+public:
+    int64_t      nTime;         // transaction time
+    unsigned int nHeight;       // block height of this event
+    uint256      hTxid;         // transaction ID
+};
+*/
+//	step 2)
+    int64_t nLastTime;
+    for (auto itr = vROIcopy.rbegin(); itr != vROIcopy.rend(); itr++ ) {
+        if (itr->nTime + 86400 < nBackBlkTime) break;	// done, 24 hours worth
+        nLastTime = itr->nTime;
+        unsigned nCurrentHeight	= itr->nHeight;
+
+        uint256 nCurHash	= itr->hTxid;
+        CTransaction tx;		// set below
+        CAmount nStake		= 0;	// set below
+        int nTxIndx		= 0;	// set below
+
+        CBlockIndex* blockindex = nullptr;
+        uint256 hash_block;
+
+//	step 3)
+//		locks cs_main
+        if (!GetTransaction(nCurHash, tx, hash_block, true, blockindex) || hash_block.IsNull()) {
+        // should never happen
+            LogPrintf("ERROR: CTrackRoi::generateROI no such mempool or blockchain tx %s\n", nCurHash.GetHex());
+            continue;
+        }
+
+//	step 4)
+// if nMNpayment == 1, we have unconditionally found an index from which we can get the publicKeyAddress
+        int nMNpaymentFound = 0;
+        int nTxEnd = tx.vout.size();
+        for (int i = 0; i < nTxEnd; i++) {
+            CAmount nVoVal = tx.vout[i].nValue;
+            if (nVoVal == 0) continue;
+            if (nVoVal == nMNpayment) {
+                nMNpaymentFound++;
+            } else {
+                nTxIndx = i;
+            }
+            nStake += nVoVal;
+        }
+
+        if (nMNpaymentFound == 0) {			// should never happen
+            LogPrintf("ERROR: CTrackRoi::generateROI masternode reward not found for tx %s\n", nCurHash.GetHex());
+            continue;
+        }
+        if (nMNpaymentFound > 1) continue;	// ambigious corner condition, reject
+
+        nStake -= nBlkReward;		       // value of stake before coinstake
+
+        CScript myPubKey = tx.vout[nTxIndx].scriptPubKey;
+
+        CTxDestination addressRet;
+        ExtractDestination(myPubKey,addressRet);
+        std::string addr = EncodeDestination(addressRet);
+
+//	step 5)
+        CStakeAnalyze sa;
+/*
+public:
+    CAmount       nStake;       // current stake value
+    unsigned int  nCurHeight;   // from vROI
+    unsigned int  nPrevHeight;  // set by traceprevious()
+    int           nDepth;       // set by caller
+};
+*/
+        sa.nStake     = nStake;
+        sa.nDepth     = -1;	// tell traceprev to validate only
+        sa.nCurHeight = nCurrentHeight;
+//	step 6)
+// updates tx to prevTx, updates sa.nDepth, sets nPrevHeight
+//	     returns prevStakeValue before stake event
+// sa inputs = current transaction
+        CAmount nStakeStatusValue = traceprevious(tx, sa, nMNpayment, nBlkReward, &nLowestHeight, &nEarliestTime, nBackHeight);
+        if (nStakeStatusValue < 0) continue;	// invalid stake
+
+//	step 7)
+        saveToMap(mapPubAddrs, sa, addr);
+    } // END ROI setup analysis
+//	step 9)
+    if (mapPubAddrs.size() < nMinAddrsBuckets) {
+        sGerror = strprintf("Not enough valid data, have %d addresses, need more than %d. Please wait.", mapPubAddrs.size(), nMinAddrsBuckets);
+        return false;
+    }
+    int nStkMinDepth = (Params().GetConsensus().NetworkUpgradeActive(nBackHeight, Consensus::UPGRADE_STAKE_MIN_DEPTH_V2) ?
+                    Params().GetConsensus().nStakeMinDepthV2 : Params().GetConsensus().nStakeMinDepth);
+
+    std::vector<CStakeBestAddress> vBestAddresses;
+    vBestAddresses.reserve(mapPubAddrs.size());
+    for (auto& pAddress: mapPubAddrs) {
+        int nSize = (pAddress.second).size();
+        if (nSize <= nMinBucketSize) continue;
+        std::vector<float> vMedianStake;
+        std::vector<float> vMedianWeight;
+        vMedianStake.reserve(100);		// no more than one re-allocation
+        vMedianWeight.reserve(100);
+        float nSetWeight = 0;			// current public address average
+        float nMeanStake = 0;
+        for (auto sa: (pAddress.second)) {
+            float(nSampleWeight) = ((float)sa.nStake * (float)(sa.nCurHeight - sa.nPrevHeight + nStkMinDepth));	// this sample weight
+            nSetWeight += nSampleWeight;									// total address data set weight
+            nMeanStake += (float)sa.nStake;
+            vMedianWeight.push_back(nSampleWeight);
+            vMedianStake.push_back(sa.nStake);
+        }
+// calculate local average and mean
+        CStakeBestAddress sba;
+        sba.sAddress      = pAddress.first;
+        sba.nCount        = nSize;
+        nMeanStake	 /= (float)COIN;
+        nSetWeight	 /= (float)COIN;
+        sba.nMeanStake    = nMeanStake / (float)nSize;
+        sba.nMeanWeight   = nSetWeight / (float)nSize;
+        sba.nMedianStake  = getMedian(vMedianStake)  / (float)COIN;
+        sba.nMedianWeight = getMedian(vMedianWeight) / (float)COIN;
+        vBestAddresses.push_back(sba);
+    }
+// address collected, sort by size, mean stake, mean weight
+/*
+class CStakeBestAddress
+{
+public:
+    std::vector<std::string, int, float, float, CAmount, float> vBestAddresses;
+    std::string sAddress;       // public address
+    int nCount;                 // number of samples in address set
+    float nMeanStake;           // average stake value in address set
+    float nMeanWeight;          // average weight in address set
+    float nMedianStake;
+    float nMedianWeight;
+};
+*/
+    std::sort(vBestAddresses.begin(), vBestAddresses.end(), [](CStakeBestAddress& a, CStakeBestAddress& b)
+        {
+            if (a.nCount != b.nCount) return a.nCount > b.nCount;
+            if (a.nMeanStake != b.nMeanStake) return a.nMeanStake > b.nMeanStake;
+            return a.nMeanWeight > b.nMeanWeight;
+        }
+    );
+    best.push_back(Pair("capture  window", strprintf(" % 2.1f    hours", (float)(nBackBlkTime - nLastTime + 180) / (float)3600)));
+/*
+    capture  window     nn.n    hours\"\n"
+    nnnn  stakes at    address  Kn6AEDy7QNFZCggHSAb9WWQbE6stG4sKwu
+       average size    nnnn        weight nnn,nnn,nnn
+       median  size    nnnn        weight nnn,nnn,nnn
+*/
+    int nVBAsize = vBestAddresses.size();
+    for(int i = 0; i < nVBAsize; i++) {
+        best.push_back(Pair(strprintf("%-4d  stakes at", vBestAddresses[i].nCount), strprintf("address  %s", vBestAddresses[i].sAddress)));
+        best.push_back(Pair("   average size",strprintf("%-15s   weight %s", CAmount2Kwithcommas((CAmount)vBestAddresses[i].nMeanStake), CAmount2Kwithcommas((CAmount)vBestAddresses[i].nMeanWeight))));
+        best.push_back(Pair("   median  size",strprintf("%-15s   weight %s", CAmount2Kwithcommas((CAmount)vBestAddresses[i].nMedianStake), CAmount2Kwithcommas((CAmount)vBestAddresses[i].nMedianWeight))));
+    }
+    return true;
+}
 // insert / update key / value pair
 void CTrackRoi::saveToMap(std::unordered_map<std::string, std::vector<CStakeAnalyze>>& mapPubAddrs, CStakeAnalyze& sa, std::string& addr)
 {
@@ -1125,4 +1345,15 @@ void CTrackRoi::dumpVroi()
     LOCK(cs_track);
     roivec_t roiSet(vROI);
     sdb.Write(roiSet);
+}
+
+float CTrackRoi::getMedian(std::vector<float>& vSamples)
+{
+    std::sort (vSamples.begin(), vSamples.end());
+    int nVsize = vSamples.size();
+    int nIndex = nVsize / 2;
+    if (nVsize & 0x1 == 1) {                    // odd number of items, return middle
+        return vSamples[nIndex];
+    }
+    return (vSamples[nIndex -1] + vSamples[nIndex]) / (float)2;
 }
