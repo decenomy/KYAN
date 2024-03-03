@@ -166,6 +166,7 @@ BITCOIN_CORE_H = \
   script/standard.h \
   script/script_error.h \
   serialize.h \
+  simpleroi.h \
   spork.h \
   sporkdb.h \
   sporkid.h \
@@ -284,6 +285,7 @@ libbitcoin_wallet_a_SOURCES = \
   messagesigner.cpp \
   legacy/stakemodifier.cpp \
   kernel.cpp \
+  simpleroi.cpp \
   wallet/db.cpp \
   wallet/rpcdump.cpp \
   wallet/rpcwallet.cpp \
