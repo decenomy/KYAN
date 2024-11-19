@@ -9,6 +9,34 @@
 
 #include "main.h"
 
+static const int64_t TOT_SPLY_TRGT_EMISSION = 50000;
+static const int64_t CIRC_SPLY_TRGT_EMISSION = 100000;
+
+class CBlockchainStatus
+{
+public:
+    int		nHeight;
+    CAmount	nMoneySupplyThisBlock;
+    CAmount	nMNReward;
+    CAmount	nStakeReward;
+    int64_t	nBlocksPerDay;
+    int64_t	nNetworkHashPS;
+    int64_t	nSmoothNetworkHashPS;
+    double	nStakedCoins;
+    double	nSmoothStakedCoins;
+    double 	nStakingROI;
+    double 	nSmoothStakingROI;
+    CAmount	nBlockValue;
+    CAmount	nMNCollateral;
+    CAmount	nMNNextWeekCollateral;
+    int		nMNEnabled;
+    double	nMNCoins;
+
+// returns 1 if !pwalletMain, -1 if RPC_IN_WARMUP, 0 if all is good
+    int getblockchainstatus();
+    std::string coin2prettyText(CAmount koin);
+};
+
 class CRewards 
 {
 private:
