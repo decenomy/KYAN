@@ -376,8 +376,6 @@ static const CRPCCommand vRPCCommands[] =
         {"kyanite", "listmasternodeconf", &listmasternodeconf, true },
         {"kyanite", "getactivemasternodecount", &getactivemasternodecount, true },
         {"kyanite", "getmasternodestatus", &getmasternodestatus, true },
-        {"kyanite", "getmasternodewinners", &getmasternodewinners, true },
-        {"kyanite", "getmasternodescores", &getmasternodescores, true },
         {"kyanite", "mnsync", &mnsync, true },
         {"kyanite", "spork", &spork, true },
         {"kyanite", "mnping", &mnping, true },
